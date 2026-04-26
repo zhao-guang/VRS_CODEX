@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  Alert,
   Button,
   DatePicker,
   Descriptions,
@@ -18,7 +19,7 @@ import { useMemo, useState } from 'react';
 import { api } from '../api';
 import { PageSection } from '../components/PageSection';
 import { StatusTag } from '../components/StatusTag';
-import type { RinexFile, Site, SolutionEpoch, SolveJob } from '../types';
+import type { RinexFile, Site, SolutionEpoch, SolveJob, SppPrecheck } from '../types';
 
 type SppFormValues = {
   siteId: number;
@@ -34,6 +35,7 @@ export function SolveJobsPage() {
   const [messageApi, contextHolder] = message.useMessage();
   const [form] = Form.useForm<SppFormValues>();
   const [activeJobId, setActiveJobId] = useState<number | null>(null);
+  const [precheckResult, setPrecheckResult] = useState<SppPrecheck | null>(null);
 
   const { data: sites } = useQuery({
     queryKey: ['sites', 'solve-form'],
@@ -87,6 +89,23 @@ export function SolveJobsPage() {
       messageApi.error(error instanceof Error ? error.message : 'SPP 任务提交失败');
     },
   });
+  const precheckMutation = useMutation({
+    mutationFn: api.precheckSppSolveJob,
+    onSuccess: (result) => {
+      setPrecheckResult(result);
+      if (result.status === 'ready') {
+        messageApi.success('预检通过，可以提交解算');
+      } else if (result.status === 'risky') {
+        messageApi.warning('预检提示存在风险，建议先查看候选历元');
+      } else {
+        messageApi.warning('预检显示当前配置不可用');
+      }
+    },
+    onError: (error) => {
+      setPrecheckResult(null);
+      messageApi.error(error instanceof Error ? error.message : '预检失败');
+    },
+  });
 
   const selectedSiteId = Form.useWatch('siteId', form);
 
@@ -130,6 +149,33 @@ export function SolveJobsPage() {
         relativity: true,
       },
     });
+  };
+
+  const handlePrecheck = async () => {
+    const values = await form.validateFields();
+    precheckMutation.mutate({
+      siteId: values.siteId,
+      observationFileId: values.observationFileId,
+      navigationFileIds: values.navigationFileIds,
+      epochTime: values.epochTime.toISOString(),
+      constellations: values.constellations,
+      elevationMaskDeg: Number(values.elevationMaskDeg),
+      searchWindowMinutes: 60,
+      maxCandidateEpochs: 8,
+      models: {
+        ionosphere: 'broadcast',
+        troposphere: 'saastamoinen',
+        earthRotation: true,
+        relativity: true,
+      },
+    });
+  };
+
+  const handleApplyCandidateEpoch = (epochTime: string) => {
+    form.setFieldsValue({
+      epochTime: dayjs(epochTime),
+    });
+    messageApi.success(`已回填候选历元 ${dayjs(epochTime).format('YYYY-MM-DD HH:mm:ss')}`);
   };
 
   const columns = [
@@ -196,9 +242,14 @@ export function SolveJobsPage() {
       <PageSection
         title="SPP 单点定位"
         extra={
-          <Button type="primary" loading={createMutation.isPending} onClick={handleSubmit}>
-            提交 SPP 任务
-          </Button>
+          <Space>
+            <Button loading={precheckMutation.isPending} onClick={handlePrecheck}>
+              执行预检
+            </Button>
+            <Button type="primary" loading={createMutation.isPending} onClick={handleSubmit}>
+              提交 SPP 任务
+            </Button>
+          </Space>
         }
       >
         <Form
@@ -226,7 +277,7 @@ export function SolveJobsPage() {
               label="导航文件"
               name="navigationFileIds"
               rules={[{ required: true, message: '请选择至少一个本地导航文件' }]}
-              extra="真实 SPP 第一版当前基于 GPS 广播星历解算。"
+              extra="默认推荐先用 GPS。Galileo 已接入实验性求解链路，可手动开启联调。"
             >
               <Select mode="multiple" showSearch options={navigationOptions} optionFilterProp="label" />
             </Form.Item>
@@ -234,13 +285,108 @@ export function SolveJobsPage() {
               <DatePicker showTime style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item label="星座" name="constellations">
-              <Select mode="multiple" options={[{ value: 'GPS' }, { value: 'BDS', disabled: true }, { value: 'GAL', disabled: true }, { value: 'GLO', disabled: true }]} />
+              <Select mode="multiple" options={[{ value: 'GPS' }, { value: 'GAL' }, { value: 'BDS', disabled: true }, { value: 'GLO', disabled: true }]} />
             </Form.Item>
             <Form.Item label="截止高度角" name="elevationMaskDeg">
               <Select options={[{ value: 5 }, { value: 10 }, { value: 15 }, { value: 20 }]} />
             </Form.Item>
           </div>
         </Form>
+
+        {precheckResult ? (
+          <Space direction="vertical" size={16} style={{ width: '100%' }}>
+            <Alert
+              type={
+                precheckResult.status === 'ready'
+                  ? 'success'
+                  : precheckResult.status === 'risky'
+                    ? 'warning'
+                    : 'error'
+              }
+              message={`预检结论：${precheckResult.recommendation}`}
+              action={
+                precheckResult.nearestCandidateEpochTime ? (
+                  <Button size="small" type="primary" onClick={() => handleApplyCandidateEpoch(precheckResult.nearestCandidateEpochTime!)}>
+                    回填最近候选历元
+                  </Button>
+                ) : undefined
+              }
+              showIcon
+            />
+            <Descriptions bordered column={2}>
+              <Descriptions.Item label="预检状态">
+                <StatusTag value={precheckResult.status} />
+              </Descriptions.Item>
+              <Descriptions.Item label="搜索窗口">
+                {precheckResult.searchWindowMinutes} 分钟
+              </Descriptions.Item>
+              <Descriptions.Item label="最近候选历元">
+                {precheckResult.nearestCandidateEpochTime ?? '-'}
+              </Descriptions.Item>
+              <Descriptions.Item label="距请求时刻偏差">
+                {precheckResult.nearestCandidateOffsetSeconds ?? '-'}
+              </Descriptions.Item>
+              <Descriptions.Item label="候选历元数">
+                {precheckResult.candidateEpochCount}
+              </Descriptions.Item>
+              <Descriptions.Item label="导航覆盖星座">
+                {precheckResult.availableNavSystems.join(', ') || '-'}
+              </Descriptions.Item>
+            </Descriptions>
+            {precheckResult.reasons.length > 0 ? (
+              <Alert
+                type="info"
+                showIcon
+                message={precheckResult.reasons.join(' ')}
+              />
+            ) : null}
+            <Table
+              rowKey={(row) => row.epochTime}
+              dataSource={precheckResult.candidateEpochs}
+              pagination={{ pageSize: 5 }}
+              columns={[
+                {
+                  title: '候选历元',
+                  dataIndex: 'epochTime',
+                  key: 'epochTime',
+                },
+                {
+                  title: '偏差(秒)',
+                  dataIndex: 'offsetSeconds',
+                  key: 'offsetSeconds',
+                },
+                {
+                  title: '总卫星数',
+                  dataIndex: 'totalSatellites',
+                  key: 'totalSatellites',
+                },
+                {
+                  title: '分系统',
+                  key: 'perSystemCounts',
+                  render: (_: unknown, row: SppPrecheck['candidateEpochs'][number]) =>
+                    Object.entries(row.perSystemCounts)
+                      .map(([system, count]) => `${system}:${count}`)
+                      .join(' / '),
+                },
+                {
+                  title: '卫星样本',
+                  key: 'satellites',
+                  render: (_: unknown, row: SppPrecheck['candidateEpochs'][number]) =>
+                    row.satellites.join(', '),
+                },
+                {
+                  title: '操作',
+                  key: 'actions',
+                  render: (_: unknown, row: SppPrecheck['candidateEpochs'][number]) => (
+                    <Button size="small" onClick={() => handleApplyCandidateEpoch(row.epochTime)}>
+                      回填时刻
+                    </Button>
+                  ),
+                },
+              ]}
+            />
+          </Space>
+        ) : null}
       </PageSection>
 
       <PageSection title="解算任务列表">
@@ -280,6 +426,12 @@ export function SolveJobsPage() {
               </Descriptions.Item>
               <Descriptions.Item label="实际解算时刻">
                 {(activeResult.summary.solvedEpochTime as string | undefined) ?? '-'}
+              </Descriptions.Item>
+              <Descriptions.Item label="请求高度角">
+                {String(activeResult.summary.requestedElevationMaskDeg ?? '-')}
+              </Descriptions.Item>
+              <Descriptions.Item label="实际高度角">
+                {String(activeResult.summary.appliedElevationMaskDeg ?? '-')}
               </Descriptions.Item>
               <Descriptions.Item label="有效历元">
                 {(activeResult.summary.validEpochCount as number | undefined) ?? '-'}
@@ -335,6 +487,23 @@ export function SolveJobsPage() {
                 ]}
               />
             </PageSection>
+
+            {Array.isArray(activeResult.summary.attemptDiagnostics) &&
+            activeResult.summary.attemptDiagnostics.length > 0 ? (
+              <PageSection title="失败诊断">
+                <Table
+                  rowKey={(row) => `${String(row.epochTime)}-${String(row.elevationMaskDeg)}`}
+                  dataSource={activeResult.summary.attemptDiagnostics as Array<Record<string, unknown>>}
+                  pagination={{ pageSize: 6 }}
+                  columns={[
+                    { title: '候选历元', dataIndex: 'epochTime', key: 'epochTime' },
+                    { title: '高度角', dataIndex: 'elevationMaskDeg', key: 'elevationMaskDeg' },
+                    { title: '已用卫星', dataIndex: 'usedSatellites', key: 'usedSatellites' },
+                    { title: '失败原因', dataIndex: 'error', key: 'error' },
+                  ]}
+                />
+              </PageSection>
+            ) : null}
 
             <PageSection title="卫星状态">
               <Table

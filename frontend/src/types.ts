@@ -178,6 +178,28 @@ export type SolveResult = {
   quality: Record<string, unknown>;
 };
 
+export type SppPrecheck = {
+  status: string;
+  recommendation: string;
+  requestedEpochTime: string;
+  searchWindowMinutes: number;
+  selectedConstellations: string[];
+  observationFileId: number;
+  navigationFileIds: number[];
+  availableNavSystems: string[];
+  nearestCandidateEpochTime: string | null;
+  nearestCandidateOffsetSeconds: number | null;
+  candidateEpochCount: number;
+  reasons: string[];
+  candidateEpochs: Array<{
+    epochTime: string;
+    offsetSeconds: number;
+    totalSatellites: number;
+    perSystemCounts: Record<string, number>;
+    satellites: string[];
+  }>;
+};
+
 export type SolutionEpoch = {
   id: number;
   job_id: number;

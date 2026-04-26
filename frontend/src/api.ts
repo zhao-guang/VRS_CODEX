@@ -13,6 +13,7 @@ import type {
   Site,
   SiteAvailability,
   SiteEpochMetric,
+  SppPrecheck,
   SolutionEpoch,
   SolveJob,
   SolveResult,
@@ -79,6 +80,8 @@ export const api = {
   getSolveJobs: () => request<PageResponse<SolveJob>>('/solve-jobs'),
   createSppSolveJob: (body: Record<string, unknown>) =>
     request<SolveJob>('/solve-jobs/spp', { method: 'POST', body: JSON.stringify(body) }),
+  precheckSppSolveJob: (body: Record<string, unknown>) =>
+    request<SppPrecheck>('/solve-jobs/spp/precheck', { method: 'POST', body: JSON.stringify(body) }),
   getSolveJob: (id: number) => request<SolveJob>(`/solve-jobs/${id}`),
   getSolveResult: (id: number) => request<SolveResult>(`/solve-jobs/${id}/result`),
   getSolveEpochs: (id: number) => request<SolutionEpoch[]>(`/solve-jobs/${id}/epochs`),

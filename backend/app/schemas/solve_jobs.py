@@ -22,6 +22,27 @@ class SppSolveRequest(BaseModel):
     models: SppModels = Field(default_factory=SppModels)
 
 
+class SppPrecheckRequest(SppSolveRequest):
+    search_window_minutes: int = Field(default=60, alias="searchWindowMinutes")
+    max_candidate_epochs: int = Field(default=8, alias="maxCandidateEpochs")
+
+
+class SppPrecheckRead(BaseModel):
+    status: str
+    recommendation: str
+    requested_epoch_time: datetime = Field(alias="requestedEpochTime")
+    search_window_minutes: int = Field(alias="searchWindowMinutes")
+    selected_constellations: list[str] = Field(alias="selectedConstellations")
+    observation_file_id: int = Field(alias="observationFileId")
+    navigation_file_ids: list[int] = Field(alias="navigationFileIds")
+    available_nav_systems: list[str] = Field(alias="availableNavSystems")
+    nearest_candidate_epoch_time: datetime | None = Field(default=None, alias="nearestCandidateEpochTime")
+    nearest_candidate_offset_seconds: float | None = Field(default=None, alias="nearestCandidateOffsetSeconds")
+    candidate_epoch_count: int = Field(alias="candidateEpochCount")
+    reasons: list[str]
+    candidate_epochs: list[dict] = Field(alias="candidateEpochs")
+
+
 class SolveJobRead(ORMModel):
     id: int
     job_type: str

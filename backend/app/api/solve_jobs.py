@@ -3,7 +3,16 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import DBSession
 from app.api.response import ok
 from app.schemas.common import PaginatedItems
-from app.schemas.solve_jobs import SatelliteStateRead, SolutionEpochRead, SolveJobRead, SolveResultRead, SppSolveRequest
+from app.schemas.solve_jobs import (
+    SatelliteStateRead,
+    SolutionEpochRead,
+    SolveJobRead,
+    SolveResultRead,
+    SppPrecheckRead,
+    SppPrecheckRequest,
+    SppSolveRequest,
+)
+from app.services.precheck_service import run_spp_precheck
 from app.services.solve_job_service import create_spp_job, get_job, list_jobs
 
 router = APIRouter(prefix="/solve-jobs", tags=["solve-jobs"])
@@ -40,6 +49,15 @@ async def create_spp_solve_job(payload: SppSolveRequest, db: DBSession):
             }
         )
     )
+
+
+@router.post("/spp/precheck")
+async def precheck_spp_solve_job(payload: SppPrecheckRequest, db: DBSession):
+    try:
+        result = run_spp_precheck(db, payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return ok(SppPrecheckRead.model_validate(result))
 
 
 @router.get("/{job_id}")

@@ -54,12 +54,13 @@ struct ObservationEpoch {
 };
 
 struct RinexObservationFile {
-  std::vector<std::string> gps_observation_types;
+  std::map<char, std::vector<std::string>> observation_types_by_system;
   std::array<double, 3> approximate_position_xyz{};
   std::vector<ObservationEpoch> epochs;
 };
 
-struct GpsEphemeris {
+struct BroadcastEphemeris {
+  char system{'G'};
   std::string prn;
   DateTime toc{};
   double af0{};
@@ -84,10 +85,12 @@ struct GpsEphemeris {
   double idot{};
   double gps_week{};
   double tgd{};
+  double bgd_e5a_e1{0.0};
+  double bgd_e5b_e1{0.0};
 };
 
 struct NavDataset {
-  std::vector<GpsEphemeris> ephemerides;
+  std::vector<BroadcastEphemeris> ephemerides;
   std::optional<std::array<double, 4>> gps_iono_alpha;
   std::optional<std::array<double, 4>> gps_iono_beta;
 };
@@ -114,14 +117,30 @@ struct EpochSolution {
   Vec3 receiver{};
   std::string solved_epoch;
   std::vector<SatelliteSolution> used_satellites;
-  std::array<std::array<double, 4>, 4> inverse{};
   double sigma0{};
+  double pdop{};
+  double hdop{};
+  double vdop{};
+};
+
+struct AttemptDiagnostics {
+  std::string epoch_time;
+  double elevation_mask_deg{};
+  std::string error;
+  int used_satellites{};
 };
 
 struct SppModelOptions {
   bool use_ionosphere{true};
   bool use_troposphere{true};
 };
+
+struct PseudorangeSelection {
+  double value{};
+  std::string observation_code;
+};
+
+using Matrix = std::vector<std::vector<double>>;
 
 std::array<double, 3> ecef_to_geodetic(const Vec3& xyz);
 
@@ -277,6 +296,10 @@ Vec3 operator*(double factor, const Vec3& rhs) {
   return {factor * rhs.x, factor * rhs.y, factor * rhs.z};
 }
 
+double distance_between(const Vec3& lhs, const Vec3& rhs) {
+  return vector_norm(lhs - rhs);
+}
+
 Vec3 geodetic_to_ecef(double latitude_deg, double longitude_deg, double height_m) {
   constexpr double a = 6378137.0;
   constexpr double f = 1.0 / 298.257223563;
@@ -297,6 +320,21 @@ Vec3 geodetic_to_ecef(double latitude_deg, double longitude_deg, double height_m
 
 bool finite_vec3(const Vec3& value) {
   return std::isfinite(value.x) && std::isfinite(value.y) && std::isfinite(value.z) && vector_norm(value) > 1000.0;
+}
+
+std::string system_name(char system) {
+  switch (system) {
+    case 'G':
+      return "GPS";
+    case 'E':
+      return "GAL";
+    case 'C':
+      return "BDS";
+    case 'R':
+      return "GLO";
+    default:
+      return "UNK";
+  }
 }
 
 double clamp(double value, double lower, double upper) {
@@ -409,17 +447,19 @@ RinexObservationFile parse_rinex_observation(const std::string& path) {
   for (; index < lines.size(); ++index) {
     const std::string& line = lines[index];
     const std::string label = line.size() >= 60 ? trim(line.substr(60)) : "";
-    if (label == "SYS / # / OBS TYPES" && !line.empty() && line[0] == 'G') {
+    if (label == "SYS / # / OBS TYPES" && !line.empty()) {
+      const char system = line[0];
       int count = parse_int(line.substr(3, 3));
+      auto& system_types = file.observation_types_by_system[system];
       for (int column = 0; column < std::min(13, count); ++column) {
-        file.gps_observation_types.push_back(trim(line.substr(7 + column * 4, 3)));
+        system_types.push_back(trim(line.substr(7 + column * 4, 3)));
       }
-      while (static_cast<int>(file.gps_observation_types.size()) < count) {
+      while (static_cast<int>(system_types.size()) < count) {
         ++index;
         const std::string& continuation = lines[index];
-        int remaining = count - static_cast<int>(file.gps_observation_types.size());
+        int remaining = count - static_cast<int>(system_types.size());
         for (int column = 0; column < std::min(13, remaining); ++column) {
-          file.gps_observation_types.push_back(trim(continuation.substr(7 + column * 4, 3)));
+          system_types.push_back(trim(continuation.substr(7 + column * 4, 3)));
         }
       }
     } else if (label == "APPROX POSITION XYZ") {
@@ -434,7 +474,6 @@ RinexObservationFile parse_rinex_observation(const std::string& path) {
     }
   }
 
-  const int gps_obs_count = static_cast<int>(file.gps_observation_types.size());
   while (index < lines.size()) {
     const std::string& line = lines[index];
     if (line.empty() || line[0] != '>') {
@@ -460,14 +499,13 @@ RinexObservationFile parse_rinex_observation(const std::string& path) {
       }
       const std::string prn = record.substr(0, 3);
       const char system = prn[0];
-      int observation_count = 0;
-      if (system == 'G') {
-        observation_count = gps_obs_count;
-      }
-      if (observation_count == 0) {
+      const auto types_iterator = file.observation_types_by_system.find(system);
+      if (types_iterator == file.observation_types_by_system.end()) {
         ++index;
         continue;
       }
+      const auto& observation_types = types_iterator->second;
+      const int observation_count = static_cast<int>(observation_types.size());
       const int required_lines = static_cast<int>(std::ceil((3.0 + observation_count * 16.0) / 80.0));
       for (int extra = 1; extra < required_lines && index + extra < lines.size(); ++extra) {
         std::string padded = lines[index + extra];
@@ -489,7 +527,7 @@ RinexObservationFile parse_rinex_observation(const std::string& path) {
         if (value_text.empty()) {
           continue;
         }
-        observation.values[file.gps_observation_types[obs_index]] = std::stod(value_text);
+        observation.values[observation_types[obs_index]] = std::stod(value_text);
       }
       epoch.observations.push_back(std::move(observation));
     }
@@ -540,11 +578,12 @@ NavDataset parse_rinex_navigation(const std::string& path) {
       ++index;
       continue;
     }
-    if (line0[0] != 'G') {
+    if (line0[0] != 'G' && line0[0] != 'E') {
       index += 8;
       continue;
     }
-    GpsEphemeris eph;
+    BroadcastEphemeris eph;
+    eph.system = line0[0];
     eph.prn = trim(line0.substr(0, 3));
     eph.toc = parse_rinex_epoch_prefix(line0, 3, false);
     eph.af0 = parse_double(line0.substr(23, 19));
@@ -576,7 +615,12 @@ NavDataset parse_rinex_navigation(const std::string& path) {
     eph.omega_dot = parse_nav_field(line4, 3);
     eph.idot = parse_nav_field(line5, 0);
     eph.gps_week = parse_nav_field(line5, 2);
-    eph.tgd = parse_nav_field(line6, 2);
+    if (eph.system == 'G') {
+      eph.tgd = parse_nav_field(line6, 2);
+    } else if (eph.system == 'E') {
+      eph.bgd_e5a_e1 = parse_nav_field(line6, 2);
+      eph.bgd_e5b_e1 = parse_nav_field(line6, 3);
+    }
 
     dataset.ephemerides.push_back(eph);
     index += 8;
@@ -588,19 +632,24 @@ NavDataset parse_rinex_navigation(const std::string& path) {
   return dataset;
 }
 
-std::optional<double> select_pseudorange(const ObservationRecord& observation) {
-  static const std::vector<std::string> preferred = {"C1C", "C1W", "C1P", "C1S", "C1X", "C1L", "C1M", "C1N"};
+std::optional<PseudorangeSelection> select_pseudorange(const ObservationRecord& observation) {
+  std::vector<std::string> preferred;
+  if (!observation.satellite.empty() && observation.satellite[0] == 'E') {
+    preferred = {"C1C", "C1X", "C1A", "C1B", "C1Z"};
+  } else {
+    preferred = {"C1C", "C1W", "C1P", "C1S", "C1X", "C1L", "C1M", "C1N"};
+  }
   for (const auto& code : preferred) {
     auto iterator = observation.values.find(code);
     if (iterator != observation.values.end() && std::isfinite(iterator->second)) {
-      return iterator->second;
+      return PseudorangeSelection{iterator->second, code};
     }
   }
   return std::nullopt;
 }
 
-const GpsEphemeris* find_best_ephemeris(const std::vector<GpsEphemeris>& ephemerides, const std::string& prn, const GpsTime& time) {
-  const GpsEphemeris* best = nullptr;
+const BroadcastEphemeris* find_best_ephemeris(const std::vector<BroadcastEphemeris>& ephemerides, const std::string& prn, const GpsTime& time) {
+  const BroadcastEphemeris* best = nullptr;
   double best_distance = std::numeric_limits<double>::max();
   for (const auto& eph : ephemerides) {
     if (eph.prn != prn) {
@@ -615,7 +664,86 @@ const GpsEphemeris* find_best_ephemeris(const std::vector<GpsEphemeris>& ephemer
   return best;
 }
 
-std::pair<Vec3, double> satellite_position_and_clock(const GpsEphemeris& eph, const GpsTime& transmit_time) {
+std::vector<char> sort_systems(const std::set<char>& systems) {
+  const std::array<char, 4> priority = {'G', 'E', 'C', 'R'};
+  std::vector<char> ordered;
+  ordered.reserve(systems.size());
+  for (char system : priority) {
+    if (systems.count(system) > 0) {
+      ordered.push_back(system);
+    }
+  }
+  for (char system : systems) {
+    if (std::find(ordered.begin(), ordered.end(), system) == ordered.end()) {
+      ordered.push_back(system);
+    }
+  }
+  return ordered;
+}
+
+int system_priority_rank(char system) {
+  switch (system) {
+    case 'G':
+      return 0;
+    case 'E':
+      return 1;
+    case 'C':
+      return 2;
+    case 'R':
+      return 3;
+    default:
+      return 9;
+  }
+}
+
+std::vector<char> detect_active_systems(const ObservationEpoch& epoch, const NavDataset& navigation, const GpsTime& rx_time,
+                                        const std::set<char>& enabled_systems) {
+  std::map<char, int> usable_counts;
+  std::set<std::string> processed_prns;
+  for (const auto& observation : epoch.observations) {
+    if (observation.satellite.empty()) {
+      continue;
+    }
+    const char system = observation.satellite[0];
+    if (enabled_systems.count(system) == 0) {
+      continue;
+    }
+    if (!processed_prns.insert(observation.satellite).second) {
+      continue;
+    }
+    if (!select_pseudorange(observation).has_value()) {
+      continue;
+    }
+    if (find_best_ephemeris(navigation.ephemerides, observation.satellite, rx_time) == nullptr) {
+      continue;
+    }
+    usable_counts[system] += 1;
+  }
+
+  if (usable_counts.empty()) {
+    return {};
+  }
+
+  std::vector<std::pair<char, int>> ordered_counts(usable_counts.begin(), usable_counts.end());
+  std::sort(ordered_counts.begin(), ordered_counts.end(), [](const auto& lhs, const auto& rhs) {
+    if (lhs.second != rhs.second) {
+      return lhs.second > rhs.second;
+    }
+    return system_priority_rank(lhs.first) < system_priority_rank(rhs.first);
+  });
+
+  std::vector<char> selected_systems;
+  selected_systems.push_back(ordered_counts.front().first);
+  for (std::size_t index = 1; index < ordered_counts.size(); ++index) {
+    if (ordered_counts[index].second >= 2) {
+      selected_systems.push_back(ordered_counts[index].first);
+    }
+  }
+  return selected_systems;
+}
+
+std::pair<Vec3, double> satellite_position_and_clock(const BroadcastEphemeris& eph, const GpsTime& transmit_time,
+                                                     const std::string& observation_code) {
   const double tk = gps_time_difference(transmit_time.tow - eph.toe);
   const double a = eph.sqrt_a * eph.sqrt_a;
   const double n0 = std::sqrt(kMu / (a * a * a));
@@ -657,14 +785,30 @@ std::pair<Vec3, double> satellite_position_and_clock(const GpsEphemeris& eph, co
   const GpsTime toc = to_gps_time(eph.toc);
   const double dt = gps_time_difference(transmit_time.tow - toc.tow);
   const double relativity = kFRel * eph.e * eph.sqrt_a * std::sin(e);
-  const double clock = eph.af0 + eph.af1 * dt + eph.af2 * dt * dt + relativity - eph.tgd;
+  double group_delay = eph.tgd;
+  if (eph.system == 'E') {
+    if (observation_code.starts_with("C1")) {
+      group_delay = std::isfinite(eph.bgd_e5a_e1) ? eph.bgd_e5a_e1 : eph.bgd_e5b_e1;
+    }
+  }
+  const double clock = eph.af0 + eph.af1 * dt + eph.af2 * dt * dt + relativity - group_delay;
   return {position, clock};
 }
 
-std::array<double, 4> solve_linear_4x4(std::array<std::array<double, 4>, 4> matrix, std::array<double, 4> rhs) {
-  for (int pivot = 0; pivot < 4; ++pivot) {
-    int max_row = pivot;
-    for (int row = pivot + 1; row < 4; ++row) {
+std::vector<double> solve_linear_system(Matrix matrix, std::vector<double> rhs) {
+  const std::size_t size = matrix.size();
+  if (size == 0 || rhs.size() != size) {
+    throw std::runtime_error("Invalid linear system dimensions.");
+  }
+  for (const auto& row : matrix) {
+    if (row.size() != size) {
+      throw std::runtime_error("Linear system matrix must be square.");
+    }
+  }
+
+  for (std::size_t pivot = 0; pivot < size; ++pivot) {
+    std::size_t max_row = pivot;
+    for (std::size_t row = pivot + 1; row < size; ++row) {
       if (std::abs(matrix[row][pivot]) > std::abs(matrix[max_row][pivot])) {
         max_row = row;
       }
@@ -675,16 +819,16 @@ std::array<double, 4> solve_linear_4x4(std::array<std::array<double, 4>, 4> matr
     if (std::abs(divisor) < 1e-12) {
       throw std::runtime_error("Singular normal matrix.");
     }
-    for (int column = pivot; column < 4; ++column) {
+    for (std::size_t column = pivot; column < size; ++column) {
       matrix[pivot][column] /= divisor;
     }
     rhs[pivot] /= divisor;
-    for (int row = 0; row < 4; ++row) {
+    for (std::size_t row = 0; row < size; ++row) {
       if (row == pivot) {
         continue;
       }
       const double factor = matrix[row][pivot];
-      for (int column = pivot; column < 4; ++column) {
+      for (std::size_t column = pivot; column < size; ++column) {
         matrix[row][column] -= factor * matrix[pivot][column];
       }
       rhs[row] -= factor * rhs[pivot];
@@ -693,14 +837,24 @@ std::array<double, 4> solve_linear_4x4(std::array<std::array<double, 4>, 4> matr
   return rhs;
 }
 
-std::array<std::array<double, 4>, 4> invert_4x4(std::array<std::array<double, 4>, 4> matrix) {
-  std::array<std::array<double, 4>, 4> inv{};
-  for (int i = 0; i < 4; ++i) {
+Matrix invert_matrix(Matrix matrix) {
+  const std::size_t size = matrix.size();
+  if (size == 0) {
+    throw std::runtime_error("Invalid inverse matrix dimensions.");
+  }
+  for (const auto& row : matrix) {
+    if (row.size() != size) {
+      throw std::runtime_error("Inverse matrix must be square.");
+    }
+  }
+
+  Matrix inv(size, std::vector<double>(size, 0.0));
+  for (std::size_t i = 0; i < size; ++i) {
     inv[i][i] = 1.0;
   }
-  for (int pivot = 0; pivot < 4; ++pivot) {
-    int max_row = pivot;
-    for (int row = pivot + 1; row < 4; ++row) {
+  for (std::size_t pivot = 0; pivot < size; ++pivot) {
+    std::size_t max_row = pivot;
+    for (std::size_t row = pivot + 1; row < size; ++row) {
       if (std::abs(matrix[row][pivot]) > std::abs(matrix[max_row][pivot])) {
         max_row = row;
       }
@@ -711,16 +865,16 @@ std::array<std::array<double, 4>, 4> invert_4x4(std::array<std::array<double, 4>
     if (std::abs(divisor) < 1e-12) {
       throw std::runtime_error("Singular normal matrix.");
     }
-    for (int column = 0; column < 4; ++column) {
+    for (std::size_t column = 0; column < size; ++column) {
       matrix[pivot][column] /= divisor;
       inv[pivot][column] /= divisor;
     }
-    for (int row = 0; row < 4; ++row) {
+    for (std::size_t row = 0; row < size; ++row) {
       if (row == pivot) {
         continue;
       }
       const double factor = matrix[row][pivot];
-      for (int column = 0; column < 4; ++column) {
+      for (std::size_t column = 0; column < size; ++column) {
         matrix[row][column] -= factor * matrix[pivot][column];
         inv[row][column] -= factor * inv[pivot][column];
       }
@@ -762,6 +916,16 @@ std::vector<std::size_t> build_epoch_search_order(const RinexObservationFile& fi
   std::sscanf(requested_time->c_str(), "%d-%d-%dT%d:%d:%lf", &request_time.year, &request_time.month, &request_time.day,
               &request_time.hour, &request_time.minute, &request_time.second);
   const double target = unix_seconds(request_time);
+  std::vector<std::size_t> filtered;
+  for (std::size_t index : indices) {
+    const double distance = std::abs(unix_seconds(file.epochs[index].time) - target);
+    if (distance <= 3600.0) {
+      filtered.push_back(index);
+    }
+  }
+  if (!filtered.empty()) {
+    indices = filtered;
+  }
   std::sort(indices.begin(), indices.end(), [&](std::size_t lhs, std::size_t rhs) {
     const double lhs_distance = std::abs(unix_seconds(file.epochs[lhs].time) - target);
     const double rhs_distance = std::abs(unix_seconds(file.epochs[rhs].time) - target);
@@ -773,26 +937,58 @@ std::vector<std::size_t> build_epoch_search_order(const RinexObservationFile& fi
   return indices;
 }
 
+std::vector<double> build_elevation_mask_candidates(double requested_mask_deg) {
+  const double normalized = std::clamp(requested_mask_deg, 0.0, 30.0);
+  std::vector<double> candidates = {normalized};
+  for (double candidate = normalized - 5.0; candidate >= 5.0; candidate -= 5.0) {
+    if (std::find(candidates.begin(), candidates.end(), candidate) == candidates.end()) {
+      candidates.push_back(candidate);
+    }
+  }
+  if (std::find(candidates.begin(), candidates.end(), 5.0) == candidates.end()) {
+    candidates.push_back(5.0);
+  }
+  return candidates;
+}
+
 EpochSolution solve_epoch_spp(const ObservationEpoch& epoch, const NavDataset& navigation, const Vec3& initial_receiver,
-                              double elevation_mask_deg, const SppModelOptions& options) {
+                              double elevation_mask_deg, const SppModelOptions& options,
+                              const std::set<char>& enabled_systems) {
   const GpsTime rx_time = to_gps_time(epoch.time);
+  const auto active_systems = detect_active_systems(epoch, navigation, rx_time, enabled_systems);
+  if (active_systems.empty()) {
+    return {false, "No usable observations with matching broadcast ephemeris were found for the requested constellations.",
+            {}, to_iso8601(epoch.time), {}, 0.0, 0.0, 0.0, 0.0};
+  }
+
+  std::map<char, std::size_t> clock_columns;
+  for (std::size_t index = 0; index < active_systems.size(); ++index) {
+    clock_columns[active_systems[index]] = 3 + index;
+  }
+  const std::size_t state_size = 3 + active_systems.size();
+  const std::size_t minimum_observations = state_size + (active_systems.size() > 1 ? 1 : 0);
+
   Vec3 receiver = initial_receiver;
-  double receiver_clock_bias = 0.0;
+  std::vector<double> receiver_clock_biases(active_systems.size(), 0.0);
   std::vector<SatelliteSolution> used_satellites;
   std::set<std::string> excluded_prns;
 
   for (int quality_round = 0; quality_round < 3; ++quality_round) {
     receiver = initial_receiver;
-    receiver_clock_bias = 0.0;
+    std::fill(receiver_clock_biases.begin(), receiver_clock_biases.end(), 0.0);
 
     for (int iteration = 0; iteration < 8; ++iteration) {
-      std::array<std::array<double, 4>, 4> normal{};
-      std::array<double, 4> rhs{};
+      Matrix normal(state_size, std::vector<double>(state_size, 0.0));
+      std::vector<double> rhs(state_size, 0.0);
       used_satellites.clear();
       std::set<std::string> processed_prns;
 
       for (const auto& observation : epoch.observations) {
-        if (observation.satellite.empty() || observation.satellite[0] != 'G') {
+        if (observation.satellite.empty()) {
+          continue;
+        }
+        const char system = observation.satellite[0];
+        if (enabled_systems.count(system) == 0) {
           continue;
         }
         if (excluded_prns.count(observation.satellite) > 0) {
@@ -801,25 +997,29 @@ EpochSolution solve_epoch_spp(const ObservationEpoch& epoch, const NavDataset& n
         if (!processed_prns.insert(observation.satellite).second) {
           continue;
         }
+        const auto clock_column_iterator = clock_columns.find(system);
+        if (clock_column_iterator == clock_columns.end()) {
+          continue;
+        }
         const auto pseudorange = select_pseudorange(observation);
         if (!pseudorange.has_value()) {
           continue;
         }
-        const GpsEphemeris* eph = find_best_ephemeris(navigation.ephemerides, observation.satellite, rx_time);
+        const BroadcastEphemeris* eph = find_best_ephemeris(navigation.ephemerides, observation.satellite, rx_time);
         if (eph == nullptr) {
           continue;
         }
 
-        double travel_time = pseudorange.value() / kC;
+        double travel_time = pseudorange->value / kC;
         GpsTime tx_time = rx_time;
         tx_time.tow -= travel_time;
-        auto [sat_pos_initial, sat_clock_initial] = satellite_position_and_clock(*eph, tx_time);
+        auto [sat_pos_initial, sat_clock_initial] = satellite_position_and_clock(*eph, tx_time, pseudorange->observation_code);
         const Vec3 delta_initial = sat_pos_initial - receiver;
         travel_time = vector_norm(delta_initial) / kC;
         tx_time = rx_time;
         tx_time.tow -= travel_time;
 
-        auto [sat_position, sat_clock] = satellite_position_and_clock(*eph, tx_time);
+        auto [sat_position, sat_clock] = satellite_position_and_clock(*eph, tx_time, pseudorange->observation_code);
         sat_position = rotate_earth(sat_position, travel_time);
         const Vec3 delta = sat_position - receiver;
         const double geometric_range = vector_norm(delta);
@@ -842,36 +1042,57 @@ EpochSolution solve_epoch_spp(const ObservationEpoch& epoch, const NavDataset& n
         const double ux = delta.x / geometric_range;
         const double uy = delta.y / geometric_range;
         const double uz = delta.z / geometric_range;
+        const std::size_t clock_column = clock_column_iterator->second;
         const double innovation =
-            pseudorange.value() + kC * sat_clock - tropo_delay - iono_delay - (geometric_range + receiver_clock_bias);
+            pseudorange->value + kC * sat_clock - tropo_delay - iono_delay -
+            (geometric_range + receiver_clock_biases[clock_column - 3]);
         const double weight = std::max(0.05, std::pow(std::sin(deg_to_rad(std::max(5.0, elevation))), 2.0));
 
-        const std::array<double, 4> row{-ux, -uy, -uz, 1.0};
-        for (int i = 0; i < 4; ++i) {
+        std::vector<double> row(state_size, 0.0);
+        row[0] = -ux;
+        row[1] = -uy;
+        row[2] = -uz;
+        row[clock_column] = 1.0;
+        for (std::size_t i = 0; i < state_size; ++i) {
           rhs[i] += weight * row[i] * innovation;
-          for (int j = 0; j < 4; ++j) {
+          for (std::size_t j = 0; j < state_size; ++j) {
             normal[i][j] += weight * row[i] * row[j];
           }
         }
 
         used_satellites.push_back(
-            {observation.satellite, pseudorange.value(), innovation, elevation, azimuth, sat_clock, sat_position});
+            {observation.satellite, pseudorange->value, innovation, elevation, azimuth, sat_clock, sat_position});
       }
 
-      if (used_satellites.size() < 4) {
-        return {false, "Not enough GPS pseudorange observations for SPP.", {}, to_iso8601(epoch.time), {}, {}, 0.0};
+      if (used_satellites.size() < minimum_observations) {
+        return {false,
+                active_systems.size() > 1 ? "Not enough pseudorange observations for mixed-constellation SPP."
+                                          : "Not enough pseudorange observations for SPP.",
+                {},
+                to_iso8601(epoch.time),
+                {},
+                0.0,
+                0.0,
+                0.0,
+                0.0};
       }
 
       try {
-        const auto correction = solve_linear_4x4(normal, rhs);
+        const auto correction = solve_linear_system(normal, rhs);
         receiver.x += correction[0];
         receiver.y += correction[1];
         receiver.z += correction[2];
-        receiver_clock_bias += correction[3];
+        for (std::size_t index = 0; index < active_systems.size(); ++index) {
+          receiver_clock_biases[index] += correction[3 + index];
+        }
         const double position_delta =
             std::sqrt(correction[0] * correction[0] + correction[1] * correction[1] + correction[2] * correction[2]);
-        if (position_delta < 1e-4 && std::abs(correction[3]) < 1e-4) {
-          const auto inverse = invert_4x4(normal);
+        double max_clock_delta = 0.0;
+        for (std::size_t index = 3; index < correction.size(); ++index) {
+          max_clock_delta = std::max(max_clock_delta, std::abs(correction[index]));
+        }
+        if (position_delta < 1e-4 && max_clock_delta < 1e-4) {
+          const auto inverse = invert_matrix(normal);
           double residual_sum = 0.0;
           double max_abs_residual = 0.0;
           std::string worst_prn;
@@ -884,20 +1105,24 @@ EpochSolution solve_epoch_spp(const ObservationEpoch& epoch, const NavDataset& n
             }
           }
           const double sigma0 =
-              std::sqrt(residual_sum / std::max(1.0, static_cast<double>(used_satellites.size() - 4)));
-          if (used_satellites.size() > 4 && max_abs_residual > 100.0) {
+              std::sqrt(residual_sum / std::max(1.0, static_cast<double>(used_satellites.size() - state_size)));
+          if (used_satellites.size() > minimum_observations && max_abs_residual > 100.0) {
             excluded_prns.insert(worst_prn);
             break;
           }
-          return {true, "", receiver, to_iso8601(epoch.time), used_satellites, inverse, sigma0};
+          const double pdop =
+              std::sqrt(std::max(0.0, inverse[0][0] + inverse[1][1] + inverse[2][2]));
+          const double hdop = std::sqrt(std::max(0.0, inverse[0][0] + inverse[1][1]));
+          const double vdop = std::sqrt(std::max(0.0, inverse[2][2]));
+          return {true, "", receiver, to_iso8601(epoch.time), used_satellites, sigma0, pdop, hdop, vdop};
         }
       } catch (const std::exception& exc) {
-        return {false, exc.what(), {}, to_iso8601(epoch.time), {}, {}, 0.0};
+        return {false, exc.what(), {}, to_iso8601(epoch.time), {}, 0.0, 0.0, 0.0, 0.0};
       }
     }
   }
 
-  return {false, "SPP did not converge after quality control.", {}, to_iso8601(epoch.time), {}, {}, 0.0};
+  return {false, "SPP did not converge after quality control.", {}, to_iso8601(epoch.time), {}, 0.0, 0.0, 0.0, 0.0};
 }
 
 json build_failure(const std::string& job_id, const std::string& message) {
@@ -907,6 +1132,19 @@ json build_failure(const std::string& job_id, const std::string& message) {
       {"engine", "cpp-solver-gps-spp"},
       {"error", message},
       {"summary", {{"mode", "spp"}, {"solutionStatus", "failed"}}},
+      {"quality", json::object()},
+      {"epochs", json::array()},
+      {"satellites", json::array()},
+  };
+}
+
+json build_failure_with_summary(const std::string& job_id, const std::string& message, const json& summary) {
+  return {
+      {"jobId", job_id},
+      {"status", "failed"},
+      {"engine", "cpp-solver-gps-spp"},
+      {"error", message},
+      {"summary", summary},
       {"quality", json::object()},
       {"epochs", json::array()},
       {"satellites", json::array()},
@@ -926,6 +1164,25 @@ nlohmann::json solve_spp_request(const nlohmann::json& request) {
       request.contains("models") ? request["models"].value("ionosphere", std::string("broadcast")) : "broadcast";
   const std::string troposphere_model =
       request.contains("models") ? request["models"].value("troposphere", std::string("saastamoinen")) : "saastamoinen";
+  std::set<char> enabled_systems = {'G'};
+  if (request.contains("constellations") && request["constellations"].is_array()) {
+    enabled_systems.clear();
+    for (const auto& constellation : request["constellations"]) {
+      const std::string value = constellation.get<std::string>();
+      if (value == "GPS") {
+        enabled_systems.insert('G');
+      } else if (value == "GAL") {
+        enabled_systems.insert('E');
+      } else if (value == "BDS") {
+        enabled_systems.insert('C');
+      } else if (value == "GLO") {
+        enabled_systems.insert('R');
+      }
+    }
+    if (enabled_systems.empty()) {
+      enabled_systems.insert('G');
+    }
+  }
   if (obs_path.empty()) {
     return build_failure(job_id, "Observation file path is required.");
   }
@@ -960,24 +1217,90 @@ nlohmann::json solve_spp_request(const nlohmann::json& request) {
     }
 
     const auto candidate_indices = build_epoch_search_order(obs, requested_epoch);
+    const auto mask_candidates = build_elevation_mask_candidates(elevation_mask_deg);
     std::string last_error = "SPP did not converge.";
+    std::vector<AttemptDiagnostics> diagnostics;
     const SppModelOptions options{
         ionosphere_model == "broadcast",
         troposphere_model == "saastamoinen",
     };
-    for (std::size_t epoch_index : candidate_indices) {
-      const auto attempt = solve_epoch_spp(obs.epochs[epoch_index], navigation, initial_receiver, elevation_mask_deg, options);
-      if (!attempt.success) {
-        last_error = attempt.error;
+    bool found_solution = false;
+    EpochSolution best_attempt;
+    double best_mask = elevation_mask_deg;
+    double best_score = std::numeric_limits<double>::max();
+    double requested_target_seconds = 0.0;
+    if (requested_epoch.has_value()) {
+      DateTime request_time{};
+      std::sscanf(requested_epoch->c_str(), "%d-%d-%dT%d:%d:%lf", &request_time.year, &request_time.month, &request_time.day,
+                  &request_time.hour, &request_time.minute, &request_time.second);
+      requested_target_seconds = unix_seconds(request_time);
+    }
+
+    for (double mask_candidate : mask_candidates) {
+      for (std::size_t epoch_index : candidate_indices) {
+        const auto attempt =
+            solve_epoch_spp(obs.epochs[epoch_index], navigation, initial_receiver, mask_candidate, options, enabled_systems);
+        diagnostics.push_back(
+            {to_iso8601(obs.epochs[epoch_index].time), mask_candidate, attempt.error, static_cast<int>(attempt.used_satellites.size())});
+        if (!attempt.success) {
+          last_error = attempt.error;
+          continue;
+        }
+        const double position_divergence = distance_between(attempt.receiver, initial_receiver);
+        if (position_divergence > 1000.0) {
+          diagnostics.back().error = "Candidate solution diverged too far from the approximate receiver position.";
+          last_error = diagnostics.back().error;
+          continue;
+        }
+        const double time_distance =
+            requested_epoch.has_value() ? std::abs(unix_seconds(obs.epochs[epoch_index].time) - requested_target_seconds) : 0.0;
+        const double score = position_divergence + time_distance * 0.2 + attempt.sigma0 * 10.0;
+        if (!found_solution || score < best_score) {
+          found_solution = true;
+          best_attempt = attempt;
+          best_mask = mask_candidate;
+          best_score = score;
+        }
+      }
+    }
+
+    json failure_summary = {
+        {"mode", "spp"},
+        {"solutionStatus", "failed"},
+        {"stationId", station_id},
+        {"requestedEpochTime", requested_epoch.value_or("")},
+        {"requestedElevationMaskDeg", elevation_mask_deg},
+        {"attemptedMasksDeg", mask_candidates},
+        {"candidateEpochCount", static_cast<int>(candidate_indices.size())},
+        {"attemptDiagnosticsTotal", static_cast<int>(diagnostics.size())},
+        {"constellations", request.contains("constellations") ? request["constellations"] : json::array()},
+        {"attemptDiagnostics", json::array()},
+    };
+    std::set<std::tuple<std::string, double, std::string, int>> seen_diagnostics;
+    int emitted_diagnostics = 0;
+    for (const auto& item : diagnostics) {
+      const auto key = std::make_tuple(item.epoch_time, item.elevation_mask_deg, item.error, item.used_satellites);
+      if (!seen_diagnostics.insert(key).second) {
         continue;
       }
+      if (emitted_diagnostics >= 20) {
+        break;
+      }
+      failure_summary["attemptDiagnostics"].push_back(
+          {{"epochTime", item.epoch_time},
+           {"elevationMaskDeg", item.elevation_mask_deg},
+           {"error", item.error},
+           {"usedSatellites", item.used_satellites}});
+      emitted_diagnostics += 1;
+    }
 
-      const auto geodetic = ecef_to_geodetic(attempt.receiver);
+    if (found_solution) {
+      const auto geodetic = ecef_to_geodetic(best_attempt.receiver);
       json satellites = json::array();
-      for (const auto& satellite : attempt.used_satellites) {
+      for (const auto& satellite : best_attempt.used_satellites) {
         satellites.push_back(
-            {{"epochTime", attempt.solved_epoch},
-             {"satelliteSystem", "GPS"},
+            {{"epochTime", best_attempt.solved_epoch},
+             {"satelliteSystem", system_name(satellite.prn.empty() ? '?' : satellite.prn[0])},
              {"satellitePrn", satellite.prn},
              {"elevationDeg", satellite.elevation_deg},
              {"azimuthDeg", satellite.azimuth_deg},
@@ -988,11 +1311,6 @@ nlohmann::json solve_spp_request(const nlohmann::json& request) {
              {"codeResidual", satellite.residual},
              {"phaseResidual", nullptr}});
       }
-      const double pdop =
-          std::sqrt(std::max(0.0, attempt.inverse[0][0] + attempt.inverse[1][1] + attempt.inverse[2][2]));
-      const double hdop = std::sqrt(std::max(0.0, attempt.inverse[0][0] + attempt.inverse[1][1]));
-      const double vdop = std::sqrt(std::max(0.0, attempt.inverse[2][2]));
-
       return {
           {"jobId", job_id},
           {"status", "succeeded"},
@@ -1003,31 +1321,37 @@ nlohmann::json solve_spp_request(const nlohmann::json& request) {
             {"epochCount", 1},
             {"validEpochCount", 1},
             {"solutionStatus", "code"},
-            {"requestedEpochTime", requested_epoch.value_or(attempt.solved_epoch)},
-            {"solvedEpochTime", attempt.solved_epoch},
+            {"requestedEpochTime", requested_epoch.value_or(best_attempt.solved_epoch)},
+            {"solvedEpochTime", best_attempt.solved_epoch},
+            {"requestedElevationMaskDeg", elevation_mask_deg},
+            {"appliedElevationMaskDeg", best_mask},
             {"ionosphereModel", ionosphere_model},
             {"troposphereModel", troposphere_model},
-            {"nsatUsed", static_cast<int>(attempt.used_satellites.size())},
+            {"nsatUsed", static_cast<int>(best_attempt.used_satellites.size())},
             {"observationFilename", obs_path.substr(obs_path.find_last_of("/\\") + 1)}}},
-          {"quality", {{"pdop", pdop}, {"hdop", hdop}, {"vdop", vdop}, {"sigma0", attempt.sigma0}}},
+          {"quality",
+           {{"pdop", best_attempt.pdop},
+            {"hdop", best_attempt.hdop},
+            {"vdop", best_attempt.vdop},
+            {"sigma0", best_attempt.sigma0}}},
           {"epochs",
            json::array(
-               {{{"epochTime", attempt.solved_epoch},
+               {{{"epochTime", best_attempt.solved_epoch},
                  {"siteRole", "single"},
                  {"solutionStatus", "code"},
-                 {"ecef", {{"x", attempt.receiver.x}, {"y", attempt.receiver.y}, {"z", attempt.receiver.z}}},
+                 {"ecef", {{"x", best_attempt.receiver.x}, {"y", best_attempt.receiver.y}, {"z", best_attempt.receiver.z}}},
                  {"geodetic", {{"latitude", geodetic[0]}, {"longitude", geodetic[1]}, {"height", geodetic[2]}}},
-                 {"pdop", pdop},
-                 {"hdop", hdop},
-                 {"vdop", vdop},
-                 {"nsatUsed", static_cast<int>(attempt.used_satellites.size())},
-                 {"sigma0", attempt.sigma0},
-                 {"residualSummary", {{"codeRms", attempt.sigma0}}}}})},
+                 {"pdop", best_attempt.pdop},
+                 {"hdop", best_attempt.hdop},
+                 {"vdop", best_attempt.vdop},
+                 {"nsatUsed", static_cast<int>(best_attempt.used_satellites.size())},
+                 {"sigma0", best_attempt.sigma0},
+                 {"residualSummary", {{"codeRms", best_attempt.sigma0}}}}})},
           {"satellites", satellites},
       };
     }
 
-    return build_failure(job_id, last_error);
+    return build_failure_with_summary(job_id, last_error, failure_summary);
   } catch (const std::exception& exc) {
     return build_failure(job_id, exc.what());
   }
