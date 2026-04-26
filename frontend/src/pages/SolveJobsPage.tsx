@@ -237,16 +237,29 @@ export function SolveJobsPage() {
   ];
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
       {contextHolder}
+      <div className="page-hero">
+        <div className="page-hero-kicker">解算任务</div>
+        <h1 className="page-hero-title">先预检，再提交单点定位解算任务。</h1>
+        <p className="page-hero-copy">
+          这一页保留了现有的真实 SPP 任务、失败诊断和卫星状态展示，同时按你的设计稿强化成“任务处理中心”的观感。
+        </p>
+        <div className="page-hero-meta">
+          <span>{jobs?.total ?? 0} 个任务已记录</span>
+          <span className="page-hero-meta-dot" />
+          <span>{navFiles?.total ?? 0} 个导航文件可用</span>
+        </div>
+      </div>
       <PageSection
         title="SPP 单点定位"
+        kicker="创建任务"
         extra={
           <Space>
-            <Button loading={precheckMutation.isPending} onClick={handlePrecheck}>
+            <Button className="page-button" loading={precheckMutation.isPending} onClick={handlePrecheck}>
               执行预检
             </Button>
-            <Button type="primary" loading={createMutation.isPending} onClick={handleSubmit}>
+            <Button className="page-button" type="primary" loading={createMutation.isPending} onClick={handleSubmit}>
               提交 SPP 任务
             </Button>
           </Space>
@@ -264,14 +277,14 @@ export function SolveJobsPage() {
         >
           <div className="grid-form grid-form-3">
             <Form.Item label="站点" name="siteId" rules={[{ required: true, message: '请选择站点' }]}>
-              <Select showSearch options={siteOptions} optionFilterProp="label" />
+              <Select className="page-select" showSearch options={siteOptions} optionFilterProp="label" />
             </Form.Item>
             <Form.Item
               label="观测文件"
               name="observationFileId"
               rules={[{ required: true, message: '请选择本地观测文件' }]}
             >
-              <Select showSearch options={observationOptions} optionFilterProp="label" />
+              <Select className="page-select" showSearch options={observationOptions} optionFilterProp="label" />
             </Form.Item>
             <Form.Item
               label="导航文件"
@@ -279,16 +292,16 @@ export function SolveJobsPage() {
               rules={[{ required: true, message: '请选择至少一个本地导航文件' }]}
               extra="默认推荐先用 GPS。Galileo 已接入实验性求解链路，可手动开启联调。"
             >
-              <Select mode="multiple" showSearch options={navigationOptions} optionFilterProp="label" />
+              <Select className="page-select" mode="multiple" showSearch options={navigationOptions} optionFilterProp="label" />
             </Form.Item>
             <Form.Item label="解算时刻" name="epochTime" rules={[{ required: true, message: '请选择时刻' }]}>
-              <DatePicker showTime style={{ width: '100%' }} />
+              <DatePicker className="page-picker" showTime style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item label="星座" name="constellations">
-              <Select mode="multiple" options={[{ value: 'GPS' }, { value: 'GAL' }, { value: 'BDS', disabled: true }, { value: 'GLO', disabled: true }]} />
+              <Select className="page-select" mode="multiple" options={[{ value: 'GPS' }, { value: 'GAL' }, { value: 'BDS', disabled: true }, { value: 'GLO', disabled: true }]} />
             </Form.Item>
             <Form.Item label="截止高度角" name="elevationMaskDeg">
-              <Select options={[{ value: 5 }, { value: 10 }, { value: 15 }, { value: 20 }]} />
+              <Select className="page-select" options={[{ value: 5 }, { value: 10 }, { value: 15 }, { value: 20 }]} />
             </Form.Item>
           </div>
         </Form>
@@ -341,6 +354,7 @@ export function SolveJobsPage() {
               />
             ) : null}
             <Table
+              className="soft-table"
               rowKey={(row) => row.epochTime}
               dataSource={precheckResult.candidateEpochs}
               pagination={{ pageSize: 5 }}
@@ -389,8 +403,8 @@ export function SolveJobsPage() {
         ) : null}
       </PageSection>
 
-      <PageSection title="解算任务列表">
-        <Table rowKey="id" loading={jobsLoading} dataSource={jobs?.items ?? []} columns={columns} pagination={false} />
+      <PageSection title="解算任务列表" kicker="任务列表">
+        <Table className="soft-table" rowKey="id" loading={jobsLoading} dataSource={jobs?.items ?? []} columns={columns} pagination={false} />
       </PageSection>
 
       <Drawer
@@ -443,8 +457,9 @@ export function SolveJobsPage() {
               <Descriptions.Item label="Sigma0">{String(activeResult.quality.sigma0 ?? '-')}</Descriptions.Item>
             </Descriptions>
 
-            <PageSection title="历元结果">
+            <PageSection title="历元结果" kicker="历元解">
               <Table
+                className="soft-table"
                 rowKey="id"
                 dataSource={(activeEpochs ?? []) as SolutionEpoch[]}
                 pagination={false}
@@ -492,6 +507,7 @@ export function SolveJobsPage() {
             activeResult.summary.attemptDiagnostics.length > 0 ? (
               <PageSection title="失败诊断">
                 <Table
+                  className="soft-table"
                   rowKey={(row) => `${String(row.epochTime)}-${String(row.elevationMaskDeg)}`}
                   dataSource={activeResult.summary.attemptDiagnostics as Array<Record<string, unknown>>}
                   pagination={{ pageSize: 6 }}
@@ -505,8 +521,9 @@ export function SolveJobsPage() {
               </PageSection>
             ) : null}
 
-            <PageSection title="卫星状态">
+            <PageSection title="卫星状态" kicker="卫星状态">
               <Table
+                className="soft-table"
                 rowKey={(row) => `${row.job_id}-${row.epoch_time}-${row.satellite_prn}`}
                 dataSource={activeSatellites ?? []}
                 pagination={{ pageSize: 6 }}

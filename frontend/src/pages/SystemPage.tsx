@@ -42,12 +42,25 @@ export function SystemPage() {
   });
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
       {contextHolder}
+      <div className="page-hero">
+        <div className="page-hero-kicker">系统状态</div>
+        <h1 className="page-hero-title">检查初始化、服务健康和 NPI 同步准备情况。</h1>
+        <p className="page-hero-copy">
+          当前系统页已经接入真实健康检查和 NPI 同步预览，这里主要把信息组织调整成更接近你设计稿里的控制台风格。
+        </p>
+        <div className="page-hero-meta">
+          <span>解算服务 {health?.solver.status ?? 'unknown'}</span>
+          <span className="page-hero-meta-dot" />
+          <span>{bootstrapStatus?.counts.sites ?? 0} 个站点已缓存</span>
+        </div>
+      </div>
       <PageSection
         title="初始化状态"
+        kicker="初始化"
         extra={
-          <Button type="primary" loading={bootstrapMutation.isPending} onClick={() => bootstrapMutation.mutate()}>
+          <Button className="page-button" type="primary" loading={bootstrapMutation.isPending} onClick={() => bootstrapMutation.mutate()}>
             重新检查初始化
           </Button>
         }
@@ -62,7 +75,7 @@ export function SystemPage() {
         </Space>
       </PageSection>
 
-      <PageSection title="系统健康检查">
+      <PageSection title="系统健康检查" kicker="健康矩阵">
         <Descriptions bordered column={1}>
           <Descriptions.Item label="后台">
             <StatusTag value={healthLoading ? 'unknown' : health?.backend.status} />
@@ -84,12 +97,13 @@ export function SystemPage() {
 
       <PageSection
         title="NPI 同步预览"
+        kicker="同步预览"
         extra={
           <Space>
-            <Button loading={previewLoading} onClick={() => refetchSyncPreview()}>
+            <Button className="page-button" loading={previewLoading} onClick={() => refetchSyncPreview()}>
               生成预览
             </Button>
-            <Button type="primary" danger loading={syncApplyMutation.isPending} onClick={() => syncApplyMutation.mutate()}>
+            <Button className="page-button" type="primary" danger loading={syncApplyMutation.isPending} onClick={() => syncApplyMutation.mutate()}>
               应用刷新
             </Button>
           </Space>

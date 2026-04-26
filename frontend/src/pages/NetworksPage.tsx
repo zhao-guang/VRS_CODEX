@@ -131,13 +131,27 @@ export function NetworksPage() {
   };
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
       {contextHolder}
+      <div className="page-hero">
+        <div className="page-hero-kicker">子网管理</div>
+        <h1 className="page-hero-title">管理参考站子网分组与本地维护状态。</h1>
+        <p className="page-hero-copy">
+          当前页面保留了真实 CRUD 能力，同时按设计稿重做成更轻的分组管理界面，适合快速筛选、维护和检查子网规模。
+        </p>
+        <div className="page-hero-meta">
+          <span>{data?.total ?? 0} 个已登记子网</span>
+          <span className="page-hero-meta-dot" />
+          <span>NPI 与本地来源</span>
+        </div>
+      </div>
       <PageSection
         title="子网管理"
+        kicker="子网列表"
         extra={
           <Space>
             <Input.Search
+              className="page-input"
               placeholder="搜索子网名称"
               allowClear
               onSearch={setNetworkKeyword}
@@ -146,6 +160,7 @@ export function NetworksPage() {
               style={{ width: 240 }}
             />
             <Button
+              className="page-button"
               type="primary"
               onClick={() => {
                 setEditing(null);
@@ -159,7 +174,14 @@ export function NetworksPage() {
           </Space>
         }
       >
-        <Table rowKey="id" loading={isLoading} dataSource={data?.items ?? []} columns={columns} pagination={false} />
+        <Table
+          className="soft-table"
+          rowKey="id"
+          loading={isLoading}
+          dataSource={data?.items ?? []}
+          columns={columns}
+          pagination={false}
+        />
       </PageSection>
 
       <Modal

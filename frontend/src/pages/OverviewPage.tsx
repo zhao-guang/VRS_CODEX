@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Alert, Col, List, Row, Space, Statistic, Typography } from 'antd';
+import { Alert, Col, List, Row, Space, Typography } from 'antd';
 
 import { api } from '../api';
 import { PageSection } from '../components/PageSection';
@@ -19,7 +19,7 @@ export function OverviewPage() {
   const { data: analytics } = useQuery({ queryKey: ['analytics-overview'], queryFn: api.getAnalyticsOverview });
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
       {bootstrapStatus && !bootstrapStatus.bootstrapped ? (
         <Alert
           type="warning"
@@ -29,27 +29,49 @@ export function OverviewPage() {
         />
       ) : null}
 
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={8}>
-          <PageSection title="站网规模">
-            <Statistic title="子网总数" value={bootstrapStatus?.counts.networks ?? 0} />
-          </PageSection>
-        </Col>
-        <Col xs={24} md={8}>
-          <PageSection title="站点规模">
-            <Statistic title="站点总数" value={bootstrapStatus?.counts.sites ?? 0} />
-          </PageSection>
-        </Col>
-        <Col xs={24} md={8}>
-          <PageSection title="任务概览">
-            <Statistic title="已记录解算任务" value={analytics?.solve_jobs ?? 0} />
-          </PageSection>
-        </Col>
-      </Row>
+      <div className="page-hero">
+        <div className="page-hero-kicker">总览</div>
+        <h1 className="page-hero-title">站网运行概况与关键状态总览。</h1>
+        <p className="page-hero-copy">
+          当前前端已经接入真实的子网、站点、RINEX 与解算任务数据，这里优先展示系统健康、站网规模和近期节点状态。
+        </p>
+        <div className="page-hero-meta">
+          <span>后台已接通</span>
+          <span className="page-hero-meta-dot" />
+          <span>本地缓存可用</span>
+          <span className="page-hero-meta-dot" />
+          <span>解算服务 {health?.solver.status ?? 'unknown'}</span>
+        </div>
+      </div>
+
+      <div className="metric-grid">
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">子网数量</div>
+          <div className="metric-tile-value">{bootstrapStatus?.counts.networks ?? 0}</div>
+          <div className="metric-tile-note">本地持久化子网规模</div>
+        </div>
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">站点数量</div>
+          <div className="metric-tile-value">{bootstrapStatus?.counts.sites ?? 0}</div>
+          <div className="metric-tile-note">NPI 初始化后的站点总数</div>
+        </div>
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">任务数量</div>
+          <div className="metric-tile-value">{analytics?.solve_jobs ?? 0}</div>
+          <div className="metric-tile-note">已落库的解算任务</div>
+        </div>
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">成功率</div>
+          <div className="metric-tile-value">
+            {`${(((analytics?.recent_success_rate ?? 0) * 100) || 0).toFixed(1)}%`}
+          </div>
+          <div className="metric-tile-note">近期任务成功率</div>
+        </div>
+      </div>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} xl={12}>
-          <PageSection title="系统状态">
+          <PageSection title="系统状态" kicker="健康矩阵">
             <List
               dataSource={[
                 ['后台', health?.backend.status],
@@ -67,7 +89,7 @@ export function OverviewPage() {
           </PageSection>
         </Col>
         <Col xs={24} xl={12}>
-          <PageSection title="最近子网">
+          <PageSection title="最近子网" kicker="子网分组">
             <List
               dataSource={networks?.items ?? []}
               renderItem={(item) => (
@@ -84,7 +106,7 @@ export function OverviewPage() {
         </Col>
       </Row>
 
-      <PageSection title="站点样例">
+      <PageSection title="站点样例" kicker="活动节点">
         <Row gutter={[16, 16]}>
           {(sites?.items ?? []).map((site) => (
             <Col xs={24} md={12} xl={8} key={site.id}>

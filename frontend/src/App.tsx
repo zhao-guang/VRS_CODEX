@@ -19,12 +19,13 @@ export default function App() {
       theme={{
         algorithm: theme.defaultAlgorithm,
         token: {
-          colorPrimary: '#0e7490',
-          colorBgLayout: '#f5f1e8',
-          colorBgContainer: '#fffdf9',
-          colorTextBase: '#2f241d',
-          borderRadius: 16,
-          fontFamily: "'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+          colorPrimary: '#4f46e5',
+          colorBgLayout: '#f1f3f6',
+          colorBgContainer: '#ffffff',
+          colorTextBase: '#1e293b',
+          colorBorder: '#e2e8f0',
+          borderRadius: 20,
+          fontFamily: "'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif",
         },
       }}
     >

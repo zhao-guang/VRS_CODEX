@@ -6,8 +6,9 @@ import {
   FundProjectionScreenOutlined,
   RadarChartOutlined,
   LineChartOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Space, Tag, Typography } from 'antd';
+import { Layout, Menu, Space, Typography } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
@@ -25,20 +26,24 @@ const menuItems = [
 export function AppShell() {
   const location = useLocation();
   const navigate = useNavigate();
+  const currentItem = menuItems.find((item) => location.pathname.startsWith(item.key)) ?? menuItems[0];
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider width={240} theme="light" style={{ borderRight: '1px solid #ece7dd' }}>
+    <Layout className="app-shell">
+      <Sider width={248} theme="light" className="app-sidebar">
         <div className="brand-panel">
-          <Typography.Title level={4} style={{ margin: 0 }}>
-            GNSS VRS
-          </Typography.Title>
-          <Typography.Text type="secondary">参考站网管理与解算平台</Typography.Text>
-          <Space wrap style={{ marginTop: 12 }}>
-            <Tag color="green">React</Tag>
-            <Tag color="blue">FastAPI</Tag>
-            <Tag color="gold">C++ Solver</Tag>
+          <Space align="center" size={14}>
+            <div className="brand-mark">
+              <ClusterOutlined style={{ fontSize: 22 }} />
+            </div>
+            <div>
+              <Typography.Title level={4} style={{ margin: 0, fontWeight: 800, letterSpacing: '-0.04em' }}>
+                GEOSYNC
+              </Typography.Title>
+              <Typography.Text type="secondary">GNSS 参考站网管理台</Typography.Text>
+            </div>
           </Space>
+          <div className="brand-kicker">高精度定位与大地测量管理</div>
         </div>
         <Menu
           mode="inline"
@@ -47,16 +52,47 @@ export function AppShell() {
           onClick={({ key }) => navigate(key)}
           style={{ borderInlineEnd: 'none' }}
         />
+        <div className="sidebar-security">
+          <div className="sidebar-security-title">
+            <DotChartOutlined />
+            <span>安全等级</span>
+          </div>
+          <div className="sidebar-security-bar">
+            <span />
+          </div>
+          <div className="sidebar-security-foot">链路加密 | 解算已接入</div>
+        </div>
       </Sider>
       <Layout>
         <Header className="app-header">
-          <div>
-            <Typography.Title level={3} style={{ margin: 0 }}>
-              虚拟参考站管理系统
-            </Typography.Title>
-            <Typography.Text type="secondary">
-              用于管理子网、站点、观测文件和解算任务的首版实现
-            </Typography.Text>
+          <div className="app-toolbar">
+            <div>
+              <Typography.Title level={2} style={{ margin: 0, fontWeight: 800, letterSpacing: '-0.05em' }}>
+                {currentItem.label}
+              </Typography.Title>
+              <Typography.Text type="secondary">
+                GNSS 参考站、观测文件与解算流程的一体化工作台
+              </Typography.Text>
+            </div>
+            <div className="toolbar-side">
+              <div className="toolbar-search">
+                <span>
+                  <SearchOutlined />
+                </span>
+                <input placeholder="搜索站点日志..." />
+              </div>
+              <div className="live-pill">
+                <span className="live-pill-dot" />
+                <span>站网在线</span>
+              </div>
+              <div className="profile-block">
+                <div className="profile-meta">
+                  <div className="profile-name">管理账户</div>
+                  <div className="profile-role">运维角色</div>
+                </div>
+                <div className="profile-avatar">G</div>
+              </div>
+            </div>
           </div>
         </Header>
         <Content className="app-content">

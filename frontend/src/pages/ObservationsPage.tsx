@@ -246,16 +246,29 @@ export function ObservationsPage() {
   ];
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
       {contextHolder}
+      <div className="page-hero">
+        <div className="page-hero-kicker">观测数据</div>
+        <h1 className="page-hero-title">统一查询、下载与检查观测文件资产。</h1>
+        <p className="page-hero-copy">
+          页面沿用现有 GA 查询、下载和本地索引闭环，但视觉结构已经参考设计稿统一成更偏任务台的布局。
+        </p>
+        <div className="page-hero-meta">
+          <span>{localFiles?.total ?? 0} 个本地文件</span>
+          <span className="page-hero-meta-dot" />
+          <span>{remoteResults.length} 个远端候选文件</span>
+        </div>
+      </div>
       <PageSection
         title="远端 RINEX 查询"
+        kicker="远端目录"
         extra={
           <Space>
-            <Button onClick={handleRemoteQuery} loading={remoteQueryMutation.isPending} type="primary">
+            <Button className="page-button" onClick={handleRemoteQuery} loading={remoteQueryMutation.isPending} type="primary">
               查询远端
             </Button>
-            <Button onClick={handleDownloadSelected} loading={downloadMutation.isPending}>
+            <Button className="page-button" onClick={handleDownloadSelected} loading={downloadMutation.isPending}>
               下载选中文件
             </Button>
           </Space>
@@ -276,13 +289,14 @@ export function ObservationsPage() {
         >
           <div className="grid-form grid-form-3">
             <Form.Item label="站点" name="siteIds" rules={[{ required: true, message: '请选择至少一个站点' }]}>
-              <Select mode="multiple" showSearch options={siteOptions} optionFilterProp="label" />
+              <Select className="page-select" mode="multiple" showSearch options={siteOptions} optionFilterProp="label" />
             </Form.Item>
             <Form.Item label="时间范围" name="dateRange" rules={[{ required: true, message: '请选择时间范围' }]}>
-              <DatePicker.RangePicker style={{ width: '100%' }} />
+              <DatePicker.RangePicker className="page-picker" style={{ width: '100%' }} />
             </Form.Item>
             <Form.Item label="元数据状态" name="metadataStatus">
               <Select
+                className="page-select"
                 options={[
                   { value: 'valid', label: 'valid' },
                   { value: 'invalid', label: 'invalid' },
@@ -292,13 +306,13 @@ export function ObservationsPage() {
               />
             </Form.Item>
             <Form.Item label="文件周期" name="filePeriod">
-              <Select mode="multiple" options={[{ value: '01D' }, { value: '01H' }, { value: '15M' }]} />
+              <Select className="page-select" mode="multiple" options={[{ value: '01D' }, { value: '01H' }, { value: '15M' }]} />
             </Form.Item>
             <Form.Item label="文件类型" name="fileType">
-              <Select mode="multiple" options={[{ value: 'obs' }, { value: 'nav' }, { value: 'met' }]} />
+              <Select className="page-select" mode="multiple" options={[{ value: 'obs' }, { value: 'nav' }, { value: 'met' }]} />
             </Form.Item>
             <Form.Item label="RINEX 版本" name="rinexVersion">
-              <Select mode="multiple" options={[{ value: '2' }, { value: '3' }, { value: '4' }]} />
+              <Select className="page-select" mode="multiple" options={[{ value: '2' }, { value: '3' }, { value: '4' }]} />
             </Form.Item>
             <Form.Item
               label="下载前解压"
@@ -312,8 +326,9 @@ export function ObservationsPage() {
         </Form>
       </PageSection>
 
-      <PageSection title="远端查询结果">
+      <PageSection title="远端查询结果" kicker="远端结果">
         <Table
+          className="soft-table"
           rowKey="fileId"
           loading={remoteQueryMutation.isPending}
           dataSource={remoteResults}
@@ -326,8 +341,9 @@ export function ObservationsPage() {
         />
       </PageSection>
 
-      <PageSection title="本地已下载文件">
+      <PageSection title="本地已下载文件" kicker="本地缓存">
         <Table
+          className="soft-table"
           rowKey="id"
           loading={localLoading}
           dataSource={localFiles?.items ?? []}

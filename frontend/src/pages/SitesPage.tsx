@@ -180,13 +180,27 @@ export function SitesPage() {
   };
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
       {contextHolder}
+      <div className="page-hero">
+        <div className="page-hero-kicker">站点管理</div>
+        <h1 className="page-hero-title">维护站点元数据、状态与所属子网关系。</h1>
+        <p className="page-hero-copy">
+          这里继续使用现有的站点管理接口，但整体观感对齐设计稿，强调节点状态、所属子网和位置概览。
+        </p>
+        <div className="page-hero-meta">
+          <span>{data?.total ?? 0} 个站点节点</span>
+          <span className="page-hero-meta-dot" />
+          <span>元数据可编辑</span>
+        </div>
+      </div>
       <PageSection
         title="站点管理"
+        kicker="站点列表"
         extra={
           <Space>
             <Input.Search
+              className="page-input"
               placeholder="搜索站点名称、四字符码或 DOMES"
               allowClear
               onSearch={setSiteKeyword}
@@ -195,6 +209,7 @@ export function SitesPage() {
               style={{ width: 280 }}
             />
             <Button
+              className="page-button"
               type="primary"
               onClick={() => {
                 setEditing(null);
@@ -208,7 +223,14 @@ export function SitesPage() {
           </Space>
         }
       >
-        <Table rowKey="id" loading={isLoading} dataSource={data?.items ?? []} columns={columns} pagination={false} />
+        <Table
+          className="soft-table"
+          rowKey="id"
+          loading={isLoading}
+          dataSource={data?.items ?? []}
+          columns={columns}
+          pagination={false}
+        />
       </PageSection>
 
       <Modal

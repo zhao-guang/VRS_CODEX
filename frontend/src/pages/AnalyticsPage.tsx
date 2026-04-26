@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Col, Form, Row, Select, Space, Statistic, Table, Typography } from 'antd';
+import { Form, Select, Space, Table, Typography } from 'antd';
 import ReactECharts from 'echarts-for-react';
 import { useMemo, useState } from 'react';
 
@@ -79,32 +79,46 @@ export function AnalyticsPage() {
   }, [satelliteHistory]);
 
   return (
-    <Space direction="vertical" size={20} style={{ width: '100%' }}>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={8}>
-          <PageSection title="站网统计">
-            <Statistic title="子网总数" value={overview?.totals.networks ?? 0} />
-          </PageSection>
-        </Col>
-        <Col xs={24} md={8}>
-          <PageSection title="文件规模">
-            <Statistic title="RINEX 文件数" value={overview?.totals.rinex_files ?? 0} />
-          </PageSection>
-        </Col>
-        <Col xs={24} md={8}>
-          <PageSection title="解算成功率">
-            <Statistic
-              title="最近成功率"
-              value={overview?.recent_success_rate ? overview.recent_success_rate * 100 : 0}
-              suffix="%"
-              precision={2}
-            />
-          </PageSection>
-        </Col>
-      </Row>
+    <Space direction="vertical" size={20} style={{ width: '100%' }} className="page-stack">
+      <div className="page-hero">
+        <div className="page-hero-kicker">历史分析</div>
+        <h1 className="page-hero-title">跟踪站点质量与卫星历史状态变化。</h1>
+        <p className="page-hero-copy">
+          这里继续使用真实的历元质量和卫星状态数据，把原本偏管理台的页面提升成更像监控分析台的视觉结构。
+        </p>
+        <div className="page-hero-meta">
+          <span>{overview?.totals.rinex_files ?? 0} 个文件已索引</span>
+          <span className="page-hero-meta-dot" />
+          <span>{(((overview?.recent_success_rate ?? 0) * 100) || 0).toFixed(1)}% 近期成功率</span>
+        </div>
+      </div>
 
-      <PageSection title="站点可用率与质量概览">
+      <div className="metric-grid">
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">子网</div>
+          <div className="metric-tile-value">{overview?.totals.networks ?? 0}</div>
+          <div className="metric-tile-note">子网统计</div>
+        </div>
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">文件</div>
+          <div className="metric-tile-value">{overview?.totals.rinex_files ?? 0}</div>
+          <div className="metric-tile-note">本地观测文件规模</div>
+        </div>
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">任务</div>
+          <div className="metric-tile-value">{overview?.solve_jobs ?? 0}</div>
+          <div className="metric-tile-note">历史解算任务数</div>
+        </div>
+        <div className="metric-tile">
+          <div className="metric-tile-kicker">成功率</div>
+          <div className="metric-tile-value">{(((overview?.recent_success_rate ?? 0) * 100) || 0).toFixed(1)}%</div>
+          <div className="metric-tile-note">近期成功率</div>
+        </div>
+      </div>
+
+      <PageSection title="站点可用率与质量概览" kicker="站点可用率">
         <Table
+          className="soft-table"
           rowKey="site_id"
           dataSource={siteAvailability ?? []}
           pagination={{ pageSize: 8 }}
@@ -140,11 +154,12 @@ export function AnalyticsPage() {
         />
       </PageSection>
 
-      <PageSection title="站点历元质量趋势">
+      <PageSection title="站点历元质量趋势" kicker="历元质量">
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
           <Form layout="inline">
             <Form.Item label="站点">
               <Select
+                className="page-select"
                 showSearch
                 allowClear
                 style={{ minWidth: 280 }}
@@ -157,6 +172,7 @@ export function AnalyticsPage() {
           </Form>
           <ReactECharts option={epochChartOption} style={{ height: 320 }} />
           <Table
+            className="soft-table"
             rowKey={(row: SiteEpochMetric) => `${row.job_id}-${row.epoch_time}`}
             dataSource={siteEpochs ?? []}
             pagination={{ pageSize: 6 }}
@@ -175,11 +191,12 @@ export function AnalyticsPage() {
         </Space>
       </PageSection>
 
-      <PageSection title="卫星历史状态">
+      <PageSection title="卫星历史状态" kicker="卫星历史">
         <Space direction="vertical" size={16} style={{ width: '100%' }}>
           <Form layout="inline">
             <Form.Item label="星座">
               <Select
+                className="page-select"
                 allowClear
                 style={{ width: 160 }}
                 value={selectedSatelliteSystem}
@@ -189,6 +206,7 @@ export function AnalyticsPage() {
             </Form.Item>
             <Form.Item label="卫星 PRN">
               <Select
+                className="page-select"
                 allowClear
                 showSearch
                 style={{ width: 180 }}
@@ -200,6 +218,7 @@ export function AnalyticsPage() {
           </Form>
           <ReactECharts option={satelliteChartOption} style={{ height: 320 }} />
           <Table
+            className="soft-table"
             rowKey={(row: SatelliteHistoryItem) => `${row.job_id}-${row.epoch_time}-${row.satellite_prn}`}
             dataSource={satelliteHistory ?? []}
             pagination={{ pageSize: 6 }}
