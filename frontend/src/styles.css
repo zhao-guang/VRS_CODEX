@@ -1,0 +1,77 @@
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(14, 116, 144, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(180, 83, 9, 0.14), transparent 24%),
+    linear-gradient(180deg, #f5f1e8 0%, #efe8db 100%);
+  color: #2f241d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.brand-panel {
+  padding: 24px 20px 18px;
+}
+
+.app-header {
+  height: auto;
+  padding: 28px 32px 8px;
+  background: transparent;
+  line-height: 1.4;
+}
+
+.app-content {
+  padding: 8px 32px 32px;
+}
+
+.page-section {
+  border: 1px solid #ece7dd;
+  box-shadow: 0 18px 50px rgba(65, 51, 38, 0.07);
+}
+
+.site-card {
+  border: 1px solid #ece7dd;
+  border-radius: 16px;
+  padding: 16px;
+  background: linear-gradient(180deg, #fffdfa 0%, #f8f4eb 100%);
+}
+
+.grid-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 16px;
+}
+
+.grid-form-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.header-preview {
+  margin: 12px 0 0;
+  max-height: 360px;
+  overflow: auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #2b241f;
+  color: #f8f1e6;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+  .app-content {
+    padding: 8px 16px 24px;
+  }
+
+  .grid-form {
+    grid-template-columns: 1fr;
+  }
+}
