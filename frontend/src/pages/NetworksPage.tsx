@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button, Descriptions, Drawer, Form, Input, Modal, Popconfirm, Space, Table, Typography, message } from 'antd';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
@@ -116,12 +117,19 @@ export function NetworksPage() {
       title: '操作',
       key: 'actions',
       render: (_: unknown, record: Network) => (
-        <Space>
-          <Button size="small" onClick={() => setActiveNetworkId(record.id)}>
+        <Space className="row-action-buttons" size={8}>
+          <Button
+            className="row-action-button"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => setActiveNetworkId(record.id)}
+          >
             详情
           </Button>
           <Button
+            className="row-action-button"
             size="small"
+            icon={<EditOutlined />}
             onClick={() => {
               setEditing(record);
               form.setFieldsValue({
@@ -135,7 +143,7 @@ export function NetworksPage() {
             编辑
           </Button>
           <Popconfirm title="确认删除这个子网吗？" onConfirm={() => deleteMutation.mutate(record.id)}>
-            <Button size="small" danger>
+            <Button className="row-action-button row-action-danger" size="small" icon={<DeleteOutlined />} danger>
               删除
             </Button>
           </Popconfirm>
