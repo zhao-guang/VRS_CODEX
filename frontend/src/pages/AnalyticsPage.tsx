@@ -83,9 +83,6 @@ export function AnalyticsPage() {
       <div className="page-hero">
         <div className="page-hero-kicker">历史分析</div>
         <h1 className="page-hero-title">跟踪站点质量与卫星历史状态变化。</h1>
-        <p className="page-hero-copy">
-          这里继续使用真实的历元质量和卫星状态数据，把原本偏管理台的页面提升成更像监控分析台的视觉结构。
-        </p>
         <div className="page-hero-meta">
           <span>{overview?.totals.rinex_files ?? 0} 个文件已索引</span>
           <span className="page-hero-meta-dot" />

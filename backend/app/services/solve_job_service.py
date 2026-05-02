@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.rinex_file import RinexFile
@@ -27,12 +28,33 @@ def _load_job(db: Session, job_id: int) -> SolveJob | None:
     )
 
 
-def list_jobs(db: Session) -> list[SolveJob]:
-    return db.scalars(
-        select(SolveJob)
-        .options(selectinload(SolveJob.result))
-        .order_by(SolveJob.created_at.desc())
-    ).all()
+def list_jobs(
+    db: Session,
+    *,
+    page: int = 1,
+    page_size: int = 20,
+    status: str | None = None,
+    job_type: str | None = None,
+    site_id: int | None = None,
+) -> dict[str, Any]:
+    query = select(SolveJob).options(selectinload(SolveJob.result)).order_by(SolveJob.created_at.desc())
+    total_query = select(func.count(SolveJob.id))
+
+    filters = []
+    if status:
+        filters.append(SolveJob.status == status)
+    if job_type:
+        filters.append(SolveJob.job_type == job_type)
+    if site_id is not None:
+        filters.append(SolveJob.request_json["siteId"].as_integer() == site_id)
+
+    for filter_clause in filters:
+        query = query.where(filter_clause)
+        total_query = total_query.where(filter_clause)
+
+    total = db.scalar(total_query) or 0
+    items = db.scalars(query.offset((page - 1) * page_size).limit(page_size)).all()
+    return {"items": items, "total": total, "page": page, "page_size": page_size}
 
 
 async def create_spp_job(db: Session, request: SppSolveRequest) -> SolveJob:
@@ -136,4 +158,18 @@ async def create_spp_job(db: Session, request: SppSolveRequest) -> SolveJob:
 
 
 def get_job(db: Session, job_id: int) -> SolveJob | None:
+    return _load_job(db, job_id)
+
+
+def cancel_job(db: Session, job_id: int) -> SolveJob | None:
+    job = _load_job(db, job_id)
+    if job is None:
+        return None
+    if job.status not in {"queued", "running"}:
+        raise ValueError(f"Solve job cannot be cancelled from status '{job.status}'.")
+
+    job.status = "cancelled"
+    job.finished_at = datetime.now(tz=UTC)
+    job.error_message = "Cancelled by user request."
+    db.commit()
     return _load_job(db, job_id)

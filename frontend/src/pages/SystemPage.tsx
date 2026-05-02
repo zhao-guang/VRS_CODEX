@@ -47,9 +47,6 @@ export function SystemPage() {
       <div className="page-hero">
         <div className="page-hero-kicker">系统状态</div>
         <h1 className="page-hero-title">检查初始化、服务健康和 NPI 同步准备情况。</h1>
-        <p className="page-hero-copy">
-          当前系统页已经接入真实健康检查和 NPI 同步预览，这里主要把信息组织调整成更接近你设计稿里的控制台风格。
-        </p>
         <div className="page-hero-meta">
           <span>解算服务 {health?.solver.status ?? 'unknown'}</span>
           <span className="page-hero-meta-dot" />

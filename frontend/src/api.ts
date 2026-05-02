@@ -3,6 +3,7 @@ import type {
   ApiEnvelope,
   HealthStatus,
   Network,
+  NetworkSiteBrief,
   PageResponse,
   NpiSyncPreview,
   RinexEpochSummary,
@@ -33,7 +34,20 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(text || `Request failed: ${response.status}`);
+    let message = text;
+
+    try {
+      const errorPayload = JSON.parse(text) as { detail?: unknown; message?: unknown };
+      if (typeof errorPayload.detail === 'string') {
+        message = errorPayload.detail;
+      } else if (typeof errorPayload.message === 'string') {
+        message = errorPayload.message;
+      }
+    } catch {
+      message = text;
+    }
+
+    throw new Error(message || `Request failed: ${response.status}`);
   }
 
   const payload = (await response.json()) as ApiEnvelope<T>;
@@ -49,12 +63,15 @@ export const api = {
     request('/system/sync/npi/apply', { method: 'POST', body: JSON.stringify({ force }) }),
   getAnalyticsOverview: () => request<AnalyticsOverview>('/analytics/network-overview'),
   getNetworks: (params: URLSearchParams) => request<PageResponse<Network>>(`/networks?${params.toString()}`),
+  getNetwork: (id: number) => request<Network>(`/networks/${id}`),
+  getNetworkSites: (id: number) => request<NetworkSiteBrief[]>(`/networks/${id}/sites`),
   createNetwork: (body: { name: string; description?: string; status: string }) =>
     request<Network>('/networks', { method: 'POST', body: JSON.stringify(body) }),
   updateNetwork: (id: number, body: { name?: string; description?: string; status?: string }) =>
     request<Network>(`/networks/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
   deleteNetwork: (id: number) => request(`/networks/${id}`, { method: 'DELETE' }),
   getSites: (params: URLSearchParams) => request<PageResponse<Site>>(`/sites?${params.toString()}`),
+  getSite: (id: number) => request<Site>(`/sites/${id}`),
   createSite: (body: Record<string, unknown>) =>
     request<Site>('/sites', { method: 'POST', body: JSON.stringify(body) }),
   updateSite: (id: number, body: Record<string, unknown>) =>

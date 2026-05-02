@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>New Processing Job - Geodetic Manager</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container": "#ededf8",
+                            "on-secondary-fixed": "#101c2d",
+                            "tertiary-fixed": "#ffdbcf",
+                            "on-surface": "#191b23",
+                            "surface-tint": "#0c56d0",
+                            "surface-container-low": "#f3f3fd",
+                            "secondary": "#535f73",
+                            "status-failed": "#F5222D",
+                            "solution-code": "#1890FF",
+                            "surface-container-high": "#e7e7f2",
+                            "status-running": "#FAAD14",
+                            "solution-invalid": "#BFBFBF",
+                            "primary-fixed": "#dae2ff",
+                            "surface-bright": "#faf8ff",
+                            "solution-fix": "#52C41A",
+                            "primary-fixed-dim": "#b2c5ff",
+                            "inverse-on-surface": "#f0f0fb",
+                            "on-secondary-container": "#576377",
+                            "secondary-container": "#d4e0f8",
+                            "tertiary": "#7b2600",
+                            "secondary-fixed": "#d7e3fb",
+                            "surface-dim": "#d9d9e4",
+                            "on-primary": "#ffffff",
+                            "tertiary-container": "#a33500",
+                            "on-secondary": "#ffffff",
+                            "inverse-surface": "#2e3038",
+                            "on-primary-container": "#c4d2ff",
+                            "inverse-primary": "#b2c5ff",
+                            "on-tertiary": "#ffffff",
+                            "on-primary-fixed-variant": "#0040a2",
+                            "on-error-container": "#93000a",
+                            "on-primary-fixed": "#001848",
+                            "on-error": "#ffffff",
+                            "surface-container-highest": "#e1e2ec",
+                            "status-succeeded": "#52C41A",
+                            "background": "#faf8ff",
+                            "on-background": "#191b23",
+                            "primary": "#003d9b",
+                            "on-surface-variant": "#434654",
+                            "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                            "solution-float": "#FF7A45",
+                            "tertiary-fixed-dim": "#ffb59b",
+                            "on-tertiary-fixed": "#380d00",
+                            "on-secondary-fixed-variant": "#3b475b",
+                            "secondary-fixed-dim": "#bbc7de",
+                            "surface-variant": "#e1e2ec",
+                            "surface": "#faf8ff",
+                            "error": "#ba1a1a",
+                            "primary-container": "#0052cc",
+                            "status-cancelled": "#8C8C8C",
+                            "outline": "#737685",
+                            "outline-variant": "#c3c6d6",
+                            "surface-container-lowest": "#ffffff",
+                            "status-queued": "#0052CC",
+                            "on-tertiary-container": "#ffc6b2",
+                            "error-container": "#ffdad6",
+                            "on-tertiary-fixed-variant": "#812800"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "sidebar-width": "240px",
+                            "form-item-margin": "24px",
+                            "gutter-md": "16px",
+                            "content-padding": "24px",
+                            "card-gap": "20px"
+                    },
+                    "fontFamily": {
+                            "body-sm": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "label-mono": ["Space Grotesk"],
+                            "headline-xl": ["Inter"],
+                            "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                            "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                            "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                            "body-base": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased flex h-screen overflow-hidden">
+<!-- Shared Component: SideNavBar -->
+<nav class="bg-gray-50 dark:bg-gray-950 font-['Inter'] text-sm font-medium h-screen w-64 fixed left-0 top-0 border-r border-r border-gray-200 dark:border-gray-800 flat no shadows flex flex-col h-full py-4 z-40">
+<!-- Header -->
+<div class="px-6 pb-6 mb-2 border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container font-bold shadow-sm">
+                    G
+                </div>
+<div>
+<h1 class="text-blue-700 dark:text-blue-400 font-black tracking-tighter text-base">Geodetic Manager</h1>
+<p class="text-xs text-gray-500 font-body-sm">V2.4.1-Stable</p>
+</div>
+</div>
+</div>
+<!-- Main Nav -->
+<div class="flex-1 overflow-y-auto px-3 space-y-1">
+<!-- Overview -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Networks -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">lan</span>
+<span>Networks</span>
+</a>
+<!-- Sites -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">location_on</span>
+<span>Sites</span>
+</a>
+<!-- Observations -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">folder_open</span>
+<span>Observations</span>
+</a>
+<!-- Jobs (ACTIVE) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-blue-700 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 border-r-2 border-blue-700 dark:border-blue-400 duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">settings_suggest</span>
+<span class="font-semibold">Jobs</span>
+</a>
+<!-- Analysis -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">query_stats</span>
+<span>Analysis</span>
+</a>
+<!-- System Status -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">monitor_heart</span>
+<span>System Status</span>
+</a>
+</div>
+<!-- Footer Nav -->
+<div class="px-3 pt-4 border-t border-gray-200 dark:border-gray-800 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-gray-100 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span>
+<span>Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 ml-64 flex flex-col h-screen">
+<!-- Shared Component: TopAppBar -->
+<header class="bg-white dark:bg-gray-900 font-['Inter'] antialiased tracking-tight docked full-width top-0 sticky z-50 border-b border-gray-200 dark:border-gray-800 flat no shadows flex justify-between items-center px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-blue-700 dark:text-blue-400">GNSS Analysis Suite</span>
+</div>
+<div class="flex items-center gap-2">
+<!-- Search -->
+<div class="relative mr-4 hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[18px]">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 w-64 transition-all" placeholder="Search resources..." type="text"/>
+</div>
+<!-- Actions -->
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer active:opacity-80 ml-2">
+<span class="material-symbols-outlined text-[28px]">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-y-auto p-content-padding bg-surface-container-low">
+<div class="max-w-5xl mx-auto">
+<!-- Page Header -->
+<div class="mb-8 flex items-end justify-between">
+<div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm mb-2">
+<a class="hover:text-primary transition-colors" href="#">Jobs</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-medium">New Processing Job</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Configure New Task</h2>
+<p class="font-body-base text-body-base text-on-surface-variant mt-1">Define processing mode, assign resources, and set estimation parameters.</p>
+</div>
+</div>
+<!-- Form Container -->
+<form class="space-y-card-gap pb-20">
+<!-- Section 1: Mode Selection -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant bg-surface-bright flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-label-mono text-[12px] font-bold">1</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Processing Mode</h3>
+</div>
+<div class="p-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Mode Card 1: SPP -->
+<label class="relative flex flex-col p-5 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors group">
+<input class="absolute right-4 top-4 text-primary focus:ring-primary border-outline" name="processing_mode" type="radio" value="spp"/>
+<span class="font-label-mono text-label-mono text-on-surface mb-1 block">SPP</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-4 block">Single Point Positioning</span>
+<div class="mt-auto">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium bg-surface-container px-2 py-1 rounded text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">my_location</span> 1 Receiver
+                                        </span>
+</div>
+</label>
+<!-- Mode Card 2: RTD -->
+<label class="relative flex flex-col p-5 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors group">
+<input class="absolute right-4 top-4 text-primary focus:ring-primary border-outline" name="processing_mode" type="radio" value="rtd"/>
+<span class="font-label-mono text-label-mono text-on-surface mb-1 block">RTD</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-4 block">Real-Time Differential (Code)</span>
+<div class="mt-auto">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium bg-surface-container px-2 py-1 rounded text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">share_location</span> Base + Rover
+                                        </span>
+</div>
+</label>
+<!-- Mode Card 3: RTK (Active State Simulated) -->
+<label class="relative flex flex-col p-5 border-2 border-primary bg-primary/5 rounded-lg cursor-pointer group">
+<input checked="" class="absolute right-4 top-4 text-primary focus:ring-primary border-outline" name="processing_mode" type="radio" value="rtk"/>
+<span class="font-label-mono text-label-mono text-primary mb-1 block font-bold">RTK</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-4 block">Real-Time Kinematic (Carrier)</span>
+<div class="mt-auto">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium bg-white border border-primary/20 px-2 py-1 rounded text-primary">
+<span class="material-symbols-outlined text-[14px]">hub</span> Base + Multi-Rover
+                                        </span>
+</div>
+</label>
+</div>
+</div>
+</section>
+<!-- Section 2: Resource Selection (Context: RTK) -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant bg-surface-bright flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-label-mono text-[12px] font-bold">2</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Resource Selection</h3>
+<span class="ml-auto text-xs font-medium bg-surface-container px-2 py-1 rounded text-on-surface-variant">RTK Mode</span>
+</div>
+<div class="p-0 flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-outline-variant">
+<!-- Base Station Column -->
+<div class="flex-1 p-6 bg-surface-bright/50">
+<h4 class="font-label-mono text-label-mono text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">cell_tower</span>
+                                    Reference Station (Base)
+                                </h4>
+<div class="space-y-4">
+<div>
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-1.5">Select Site</label>
+<select class="w-full bg-white border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5">
+<option disabled="" selected="">Choose a permanent station...</option>
+<option value="ALIC">ALIC (Alice Springs)</option>
+<option value="HOB2">HOB2 (Hobart)</option>
+<option value="TOW2">TOW2 (Townsville)</option>
+</select>
+</div>
+<div>
+<label class="block font-body-sm text-body-sm text-on-surface-variant mb-1.5">Observation File (RINEX)</label>
+<div class="border border-dashed border-outline-variant rounded-lg p-4 text-center hover:bg-surface-container transition-colors cursor-pointer bg-white">
+<span class="material-symbols-outlined text-outline mb-2">upload_file</span>
+<p class="font-body-sm text-body-sm text-on-surface">Click to select or drag file here</p>
+<p class="text-[11px] text-on-surface-variant mt-1">.rnx, .crx, .o format</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Rover Stations Column -->
+<div class="flex-[1.5] p-6">
+<div class="flex items-center justify-between mb-4">
+<h4 class="font-label-mono text-label-mono text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">explore</span>
+                                        Rover Stations
+                                    </h4>
+<button class="text-xs font-medium text-primary hover:bg-primary/5 px-2 py-1 rounded flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span> Add Rover
+                                    </button>
+</div>
+<!-- Rover List Container -->
+<div class="border border-outline-variant rounded-lg overflow-hidden">
+<!-- List Header -->
+<div class="bg-surface-container-low px-4 py-2 border-b border-outline-variant flex items-center justify-between text-xs font-medium text-on-surface-variant">
+<span class="w-1/3">Site ID / Name</span>
+<span class="w-1/2">Observation File</span>
+<span class="w-8"></span>
+</div>
+<!-- Item 1 -->
+<div class="px-4 py-3 border-b border-outline-variant last:border-0 flex items-center justify-between bg-white group hover:bg-surface-container/50">
+<div class="w-1/3 font-body-sm text-body-sm text-on-surface font-medium">
+                                            ROV1 <span class="text-on-surface-variant font-normal block text-xs">Survey Point Alpha</span>
+</div>
+<div class="w-1/2 flex items-center gap-2 text-xs">
+<span class="material-symbols-outlined text-[16px] text-solution-code">description</span>
+<span class="truncate text-on-surface">ROV10450.23O</span>
+</div>
+<div class="w-8 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-error hover:bg-error/10 p-1 rounded" type="button">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Empty State Add Button -->
+<button class="w-full px-4 py-3 bg-surface-bright hover:bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm border-t border-dashed border-outline-variant flex items-center justify-center gap-2 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                                        Attach another rover file
+                                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Parameters -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant bg-surface-bright flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-label-mono text-[12px] font-bold">3</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Processing Parameters</h3>
+</div>
+<div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
+<!-- Constellations -->
+<div>
+<label class="block font-label-mono text-label-mono text-on-surface mb-3">Constellations</label>
+<div class="flex flex-wrap gap-3">
+<label class="flex items-center gap-2 px-3 py-1.5 border border-primary bg-primary/5 rounded-full cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4 border-primary" type="checkbox"/>
+<span class="text-sm font-medium text-primary">GPS</span>
+</label>
+<label class="flex items-center gap-2 px-3 py-1.5 border border-primary bg-primary/5 rounded-full cursor-pointer">
+<input checked="" class="rounded text-primary focus:ring-primary w-4 h-4 border-primary" type="checkbox"/>
+<span class="text-sm font-medium text-primary">GLONASS</span>
+</label>
+<label class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant hover:border-outline rounded-full cursor-pointer transition-colors">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 border-outline" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant">Galileo</span>
+</label>
+<label class="flex items-center gap-2 px-3 py-1.5 border border-outline-variant hover:border-outline rounded-full cursor-pointer transition-colors">
+<input class="rounded text-primary focus:ring-primary w-4 h-4 border-outline" type="checkbox"/>
+<span class="text-sm font-medium text-on-surface-variant">BeiDou</span>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<!-- Cutoff Angle -->
+<div>
+<label class="block font-label-mono text-label-mono text-on-surface mb-2">Elevation Cutoff</label>
+<div class="relative">
+<input class="w-full bg-white border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5 pr-8" max="90" min="0" type="number" value="15"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-body-sm">°</span>
+</div>
+<p class="text-[11px] text-on-surface-variant mt-1">Typical: 10-15°</p>
+</div>
+<!-- Epoch Interval -->
+<div>
+<label class="block font-label-mono text-label-mono text-on-surface mb-2">Epoch Interval</label>
+<select class="w-full bg-white border border-outline-variant text-on-surface text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5">
+<option value="1">1 Hz (1s)</option>
+<option value="5">0.2 Hz (5s)</option>
+<option value="15">15s</option>
+<option selected="" value="30">30s</option>
+<option value="60">60s</option>
+</select>
+</div>
+</div>
+<!-- Advanced Settings Toggle (Visual Only) -->
+<div class="col-span-full border-t border-outline-variant pt-4 mt-2">
+<button class="flex items-center gap-2 text-sm font-medium text-secondary hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+                                    Show Advanced Estimation Parameters
+                                    <span class="material-symbols-outlined text-[16px] ml-auto">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Form Actions -->
+<div class="flex items-center justify-end gap-4 pt-6 mt-8">
+<button class="px-5 py-2.5 rounded-lg font-medium text-sm text-on-surface-variant hover:bg-surface-container-high transition-colors focus:ring-2 focus:ring-outline-variant" type="button">
+                            Cancel
+                        </button>
+<button class="px-6 py-2.5 rounded-lg font-medium text-sm bg-primary text-white hover:bg-primary/90 transition-colors shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                            Create Job
+                        </button>
+</div>
+</form>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Satellite History Analytics | GeoSystem GNSS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#0040a2",
+                      "surface-tint": "#0c56d0",
+                      "on-primary-fixed": "#001848",
+                      "status-succeeded": "#52C41A",
+                      "on-tertiary": "#ffffff",
+                      "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                      "surface-variant": "#e1e2ec",
+                      "solution-invalid": "#BFBFBF",
+                      "on-secondary": "#ffffff",
+                      "solution-code": "#1890FF",
+                      "on-surface": "#191b23",
+                      "primary-fixed": "#dae2ff",
+                      "secondary": "#535f73",
+                      "surface-container": "#ededf8",
+                      "error-container": "#ffdad6",
+                      "surface-container-low": "#f3f3fd",
+                      "primary-container": "#0052cc",
+                      "on-tertiary-container": "#ffc6b2",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed": "#d7e3fb",
+                      "inverse-on-surface": "#f0f0fb",
+                      "tertiary-fixed": "#ffdbcf",
+                      "status-queued": "#0052CC",
+                      "solution-float": "#FF7A45",
+                      "on-secondary-fixed-variant": "#3b475b",
+                      "inverse-surface": "#2e3038",
+                      "on-primary-container": "#c4d2ff",
+                      "tertiary": "#7b2600",
+                      "primary": "#003d9b",
+                      "surface-container-high": "#e7e7f2",
+                      "status-running": "#FAAD14",
+                      "secondary-container": "#d4e0f8",
+                      "solution-fix": "#52C41A",
+                      "on-tertiary-fixed-variant": "#812800",
+                      "on-error-container": "#93000a",
+                      "surface": "#faf8ff",
+                      "on-surface-variant": "#434654",
+                      "outline-variant": "#c3c6d6",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#576377",
+                      "tertiary-container": "#a33500",
+                      "on-background": "#191b23",
+                      "surface-container-highest": "#e1e2ec",
+                      "surface-dim": "#d9d9e4",
+                      "on-error": "#ffffff",
+                      "inverse-primary": "#b2c5ff",
+                      "background": "#faf8ff",
+                      "tertiary-fixed-dim": "#ffb59b",
+                      "surface-container-lowest": "#ffffff",
+                      "status-cancelled": "#8C8C8C",
+                      "outline": "#737685",
+                      "on-secondary-fixed": "#101c2d",
+                      "status-failed": "#F5222D",
+                      "secondary-fixed-dim": "#bbc7de",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "surface-bright": "#faf8ff",
+                      "on-tertiary-fixed": "#380d00"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "form-item-margin": "24px",
+                      "sidebar-width": "240px",
+                      "gutter-md": "16px",
+                      "card-gap": "20px",
+                      "content-padding": "24px"
+              },
+              "fontFamily": {
+                      "label-mono": [
+                              "Space Grotesk"
+                      ],
+                      "headline-xl": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-base": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-xl": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-base": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Grid background for charts */
+        .chart-grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #e1e2ec 1px, transparent 1px), linear-gradient(to bottom, #e1e2ec 1px, transparent 1px);
+        }
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #faf8ff; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c3c6d6; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #737685; 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-slate-50 dark:bg-slate-950 h-screen w-64 border-r fixed left-0 top-0 z-50 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full overflow-y-auto font-sans text-[13px] tracking-tight transition-all duration-150 ease-in-out hidden md:flex">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 mb-4">
+<h1 class="text-blue-700 dark:text-blue-400 font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">public</span>
+                Precision Geodesy
+            </h1>
+<p class="text-slate-500 text-xs mt-1">V2.4.0-Stable</p>
+</div>
+<div class="flex-1 px-3 space-y-1">
+<!-- Inactive -->
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Overview
+            </a>
+<!-- Inactive -->
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+                Networks
+            </a>
+<!-- Inactive -->
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+                Sites
+            </a>
+<!-- Inactive -->
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">satellite_alt</span>
+                Observations
+            </a>
+<!-- Inactive -->
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">work_history</span>
+                Jobs
+            </a>
+<!-- ACTIVE TAB: Analysis -->
+<a class="text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-bold border-r-2 border-blue-700 dark:border-blue-400 py-2 px-4 flex items-center gap-3 rounded-l-lg transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+                Analysis
+            </a>
+<!-- Inactive -->
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">dns</span>
+                System Status
+            </a>
+</div>
+<div class="p-3 border-t border-slate-200 dark:border-slate-800 space-y-1">
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span>
+                Support
+            </a>
+<a class="text-slate-600 dark:text-slate-400 py-2 px-4 flex items-center gap-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+                Documentation
+            </a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex flex-col flex-1 w-full ml-0 md:ml-[240px] h-screen overflow-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center h-14 px-6 w-full sticky top-0 z-40 flat no shadows font-sans text-sm font-medium">
+<div class="flex items-center gap-6">
+<!-- Mobile Menu Trigger (hidden on desktop) -->
+<button class="md:hidden text-slate-600 hover:bg-slate-50 transition-colors rounded p-1">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="text-lg font-bold text-slate-900 dark:text-white hidden md:block">
+                    GeoSystem GNSS
+                </div>
+<!-- Search Bar on Left -->
+<div class="relative ml-4">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+<input class="pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:border-blue-500 w-64 transition-colors" placeholder="Search resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-blue-700 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-blue-700 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 text-blue-700 dark:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+<div class="h-8 w-8 ml-2 rounded-full bg-slate-200 border border-slate-300 overflow-hidden cursor-pointer">
+<img alt="Analyst Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF5moPZI1280wrOuRaEAOtoU5eyMaUSNTnp7FU8oeI-ZeZPuAJvOiAJyQaMdBGlwZPI-xxWykQ3YoFCqT3qTRUcIJUMdAkWrYcRiLf0Maen2VnbrRncaSHjYGaLNhvFxP3czB_6-jJ8tIEOZXfV423oluhawl5bRNY4l2rbuMSqTUj-n669lqY44uuht8sAps4xrAakU5bWVtDiklJSWg1Mh-qMDtGvPPSFTyWZGmmlXPt0nsps3gE1ufNlDXD82cSbSDUWLVM"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto p-content-padding pb-20">
+<!-- Page Header -->
+<div class="mb-6 flex justify-between items-end">
+<div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-mono text-label-mono mb-2">
+<span>Analysis</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-primary font-bold">Satellite History</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Satellite Analytics</h1>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant text-on-surface font-label-mono text-label-mono rounded hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export Data
+                    </button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="bg-surface border border-surface-variant rounded-xl p-5 mb-card-gap flex flex-wrap gap-6 items-end shadow-sm">
+<div class="flex flex-col gap-1 flex-1 min-w-[200px]">
+<label class="font-label-mono text-label-mono text-on-surface-variant">Constellation</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest border border-outline-variant text-on-surface font-body-sm text-body-sm rounded px-3 py-2 focus:ring-1 focus:ring-primary focus:border-primary">
+<option>GPS (NAVSTAR)</option>
+<option>GLONASS</option>
+<option>Galileo</option>
+<option>BeiDou</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">arrow_drop_down</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-[200px]">
+<label class="font-label-mono text-label-mono text-on-surface-variant">Satellite PRN</label>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-lowest border border-outline-variant text-on-surface font-body-sm text-body-sm rounded px-3 py-2 focus:ring-1 focus:ring-primary focus:border-primary">
+<option>G01 (Block IIF)</option>
+<option>G02 (Block IIR-M)</option>
+<option>G03 (Block IIA)</option>
+<option>G04 (Block IIF)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">arrow_drop_down</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 flex-1 min-w-[300px]">
+<label class="font-label-mono text-label-mono text-on-surface-variant">Time Range (UTC)</label>
+<div class="flex items-center gap-2">
+<input class="flex-1 bg-surface-container-lowest border border-outline-variant text-on-surface font-body-sm text-body-sm rounded px-3 py-2 focus:ring-1 focus:ring-primary" type="datetime-local" value="2023-10-24T00:00"/>
+<span class="text-on-surface-variant">-</span>
+<input class="flex-1 bg-surface-container-lowest border border-outline-variant text-on-surface font-body-sm text-body-sm rounded px-3 py-2 focus:ring-1 focus:ring-primary" type="datetime-local" value="2023-10-24T23:59"/>
+</div>
+</div>
+<button class="bg-primary text-on-primary font-label-mono text-label-mono rounded px-6 py-2.5 hover:bg-on-primary-fixed-variant transition-colors shadow-sm">
+                    Apply Filters
+                </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-card-gap">
+<!-- Health Status Overview (Col 4) -->
+<div class="lg:col-span-4 bg-surface border border-surface-variant rounded-xl p-5 flex flex-col shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center justify-between">
+                        Health Status
+                        <span class="px-2 py-0.5 rounded-full bg-status-succeeded/10 text-status-succeeded border border-status-succeeded/30 font-label-mono text-[11px] uppercase tracking-wide">Healthy</span>
+</h2>
+<div class="flex-1 flex flex-col justify-center gap-6">
+<div class="flex items-center justify-between border-b border-surface-variant pb-3">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Total Uptime (Selected Period)</span>
+<span class="font-label-mono text-label-mono text-on-surface font-bold">99.98%</span>
+</div>
+<!-- Timeline representation -->
+<div>
+<div class="flex justify-between text-[11px] font-label-mono text-on-surface-variant mb-1">
+<span>00:00</span>
+<span>12:00</span>
+<span>24:00</span>
+</div>
+<div class="w-full h-3 rounded flex overflow-hidden bg-surface-container-highest">
+<div class="bg-status-succeeded h-full" style="width: 85%" title="Healthy"></div>
+<div class="bg-status-running h-full" style="width: 10%" title="Warning / Marginal"></div>
+<div class="bg-status-succeeded h-full" style="width: 5%" title="Healthy"></div>
+</div>
+<div class="flex gap-4 mt-3">
+<div class="flex items-center gap-1.5 text-[11px] font-label-mono text-on-surface">
+<div class="w-2 h-2 rounded-full bg-status-succeeded"></div> Good
+                                </div>
+<div class="flex items-center gap-1.5 text-[11px] font-label-mono text-on-surface">
+<div class="w-2 h-2 rounded-full bg-status-running"></div> Warning
+                                </div>
+<div class="flex items-center gap-1.5 text-[11px] font-label-mono text-on-surface">
+<div class="w-2 h-2 rounded-full bg-status-failed"></div> Critical
+                                </div>
+</div>
+</div>
+<div class="bg-surface-container rounded p-3 mt-auto border border-surface-variant border-l-4 border-l-status-running">
+<h3 class="font-label-mono text-label-mono text-on-surface mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">warning</span> Active Advisory
+                            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Brief signal attenuation observed at epoch 14:22:00 UTC due to predicted solar interference.</p>
+</div>
+</div>
+</div>
+<!-- Sky Plot (Col 8) -->
+<div class="lg:col-span-8 bg-surface border border-surface-variant rounded-xl p-5 flex flex-col shadow-sm">
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Trajectory Sky Plot</h2>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-surface-container rounded font-label-mono text-[11px] text-on-surface border border-outline-variant">Azimuth: 145°</span>
+<span class="px-2 py-1 bg-surface-container rounded font-label-mono text-[11px] text-on-surface border border-outline-variant">Max Elev: 78°</span>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg relative overflow-hidden flex items-center justify-center min-h-[300px]">
+<!-- Abstract CSS Representation of a Sky Plot -->
+<div class="relative w-[280px] h-[280px] rounded-full border border-surface-variant flex items-center justify-center">
+<!-- Concentric circles for elevation -->
+<div class="absolute w-[200px] h-[200px] rounded-full border border-surface-variant border-dashed"></div>
+<div class="absolute w-[100px] h-[100px] rounded-full border border-surface-variant border-dashed"></div>
+<!-- Crosshairs for Azimuth -->
+<div class="absolute w-full h-[1px] bg-surface-variant"></div>
+<div class="absolute w-[1px] h-full bg-surface-variant"></div>
+<!-- Cardinal Directions -->
+<span class="absolute top-1 font-label-mono text-[10px] text-on-surface-variant">N</span>
+<span class="absolute bottom-1 font-label-mono text-[10px] text-on-surface-variant">S</span>
+<span class="absolute left-2 font-label-mono text-[10px] text-on-surface-variant">E</span>
+<span class="absolute right-2 font-label-mono text-[10px] text-on-surface-variant">W</span>
+<!-- Trajectory Arc (Stylized with SVG) -->
+<svg class="absolute inset-0 w-full h-full" viewbox="0 0 280 280">
+<path d="M 40,200 Q 140,20 240,160" fill="none" stroke="#0052cc" stroke-dasharray="4 4" stroke-width="3"></path>
+<circle class="shadow-sm" cx="150" cy="55" fill="#003d9b" r="6"></circle>
+<circle cx="40" cy="200" fill="#0c56d0" opacity="0.5" r="4"></circle>
+<circle cx="240" cy="160" fill="#0c56d0" opacity="0.5" r="4"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- Elevation Trend (Col 6) -->
+<div class="lg:col-span-6 bg-surface border border-surface-variant rounded-xl p-5 shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Elevation Angle</h2>
+<div class="h-48 w-full bg-surface-container-lowest border border-outline-variant rounded chart-grid-bg relative p-2">
+<!-- Stylized Line Chart via CSS/SVG -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Y-axis lines -->
+<line stroke="#e1e2ec" stroke-width="0.5" x1="0" x2="100" y1="25" y2="25"></line>
+<line stroke="#e1e2ec" stroke-width="0.5" x1="0" x2="100" y1="50" y2="50"></line>
+<line stroke="#e1e2ec" stroke-width="0.5" x1="0" x2="100" y1="75" y2="75"></line>
+<!-- Data Line -->
+<path d="M 0,90 Q 20,60 40,20 T 80,10 T 100,80" fill="none" stroke="#0c56d0" stroke-width="2"></path>
+<!-- Current Point -->
+<circle cx="60" cy="13" fill="#001848" r="2"></circle>
+</svg>
+<div class="absolute bottom-1 left-2 text-[10px] font-label-mono text-on-surface-variant">00:00</div>
+<div class="absolute bottom-1 right-2 text-[10px] font-label-mono text-on-surface-variant">24:00</div>
+<div class="absolute top-1 left-2 text-[10px] font-label-mono text-on-surface-variant">90°</div>
+<div class="absolute bottom-4 left-2 text-[10px] font-label-mono text-on-surface-variant">0°</div>
+</div>
+</div>
+<!-- SNR Trend (Col 6) -->
+<div class="lg:col-span-6 bg-surface border border-surface-variant rounded-xl p-5 shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4">Signal-to-Noise Ratio (SNR)</h2>
+<div class="h-48 w-full bg-surface-container-lowest border border-outline-variant rounded chart-grid-bg relative p-2 flex items-end gap-1">
+<!-- Stylized Bar Chart via CSS -->
+<div class="w-full h-full flex items-end gap-0.5 pt-4">
+<div class="flex-1 bg-primary-fixed-dim/60 h-[40%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary-fixed-dim/60 h-[50%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary-fixed-dim/60 h-[65%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary-fixed-dim/60 h-[80%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary-fixed-dim/60 h-[85%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary h-[90%] border-t-2 border-on-primary-fixed"></div> <!-- Current -->
+<div class="flex-1 bg-primary-fixed-dim/60 h-[85%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-status-running/60 h-[60%] hover:bg-status-running transition-colors"></div> <!-- Dip -->
+<div class="flex-1 bg-status-failed/60 h-[30%] hover:bg-status-failed transition-colors"></div> <!-- Dip -->
+<div class="flex-1 bg-primary-fixed-dim/60 h-[50%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary-fixed-dim/60 h-[30%] hover:bg-primary transition-colors"></div>
+<div class="flex-1 bg-primary-fixed-dim/60 h-[20%] hover:bg-primary transition-colors"></div>
+</div>
+<div class="absolute top-1 left-2 text-[10px] font-label-mono text-on-surface-variant">55 dBHz</div>
+<div class="absolute bottom-4 left-2 text-[10px] font-label-mono text-on-surface-variant">20 dBHz</div>
+</div>
+</div>
+<!-- Phase Residuals (Col 12) -->
+<div class="lg:col-span-12 bg-surface border border-surface-variant rounded-xl p-5 shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4 flex justify-between items-center">
+                        Phase Residuals (L1/L2)
+                        <span class="text-body-sm font-body-sm text-on-surface-variant font-normal">RMS: 0.014m</span>
+</h2>
+<div class="h-32 w-full bg-surface-container-lowest border border-outline-variant rounded chart-grid-bg relative p-2">
+<!-- Zero Line -->
+<div class="absolute top-1/2 left-0 w-full h-[1px] bg-outline-variant z-0"></div>
+<svg class="w-full h-full relative z-10" preserveaspectratio="none" viewbox="0 0 200 100">
+<!-- L1 Residuals -->
+<path d="M 0,50 L 10,48 L 20,52 L 30,45 L 40,55 L 50,49 L 60,51 L 70,42 L 80,60 L 90,48 L 100,50 L 110,53 L 120,47 L 130,51 L 140,49 L 150,55 L 160,45 L 170,52 L 180,48 L 190,51 L 200,50" fill="none" opacity="0.8" stroke="#0052cc" stroke-width="1.5"></path>
+<!-- L2 Residuals -->
+<path d="M 0,50 L 10,52 L 20,48 L 30,55 L 40,45 L 50,51 L 60,49 L 70,58 L 80,40 L 90,52 L 100,50 L 110,47 L 120,53 L 130,49 L 140,51 L 150,45 L 160,55 L 170,48 L 180,52 L 190,49 L 200,50" fill="none" opacity="0.6" stroke="#FF7A45" stroke-dasharray="2 2" stroke-width="1"></path>
+</svg>
+<div class="absolute top-2 right-4 flex flex-col gap-1 bg-surface/80 p-2 rounded border border-surface-variant backdrop-blur-sm">
+<div class="flex items-center gap-2 text-[10px] font-label-mono text-on-surface"><div class="w-3 h-0.5 bg-[#0052cc]"></div> L1 Carrier</div>
+<div class="flex items-center gap-2 text-[10px] font-label-mono text-on-surface"><div class="w-3 h-0.5 bg-[#FF7A45] border-t border-dashed border-[#FF7A45]"></div> L2 Carrier</div>
+</div>
+</div>
+</div>
+<!-- Exception Data Table (Col 12) -->
+<div class="lg:col-span-12 bg-surface border border-surface-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-5 border-b border-surface-variant flex justify-between items-center bg-white">
+<h2 class="font-headline-md text-headline-md text-on-surface">Epoch Exception Log</h2>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">filter_list</span>
+<select class="pl-9 pr-8 py-1.5 bg-surface-container-lowest border border-outline-variant text-on-surface font-body-sm text-body-sm rounded focus:ring-1 focus:ring-primary focus:border-primary appearance-none">
+<option>All Exceptions</option>
+<option>Cycle Slips</option>
+<option>Low SNR</option>
+<option>Outliers</option>
+</select>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-variant">
+<th class="p-4 font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap">Epoch Time (UTC)</th>
+<th class="p-4 font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap">Event Type</th>
+<th class="p-4 font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap">Severity</th>
+<th class="p-4 font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap">Observed Value</th>
+<th class="p-4 font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap">Threshold</th>
+<th class="p-4 font-label-mono text-label-mono text-on-surface-variant whitespace-nowrap text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface">
+<!-- Row 1 -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
+<td class="p-4 font-label-mono text-on-surface-variant">2023-10-24 14:22:00</td>
+<td class="p-4 font-medium text-on-surface">Cycle Slip (L1)</td>
+<td class="p-4">
+<span class="px-2.5 py-1 rounded-full bg-status-failed/10 text-status-failed border border-status-failed/30 font-label-mono text-[11px] uppercase tracking-wide">Critical</span>
+</td>
+<td class="p-4 font-label-mono">ΔΦ = 3.5 cycles</td>
+<td class="p-4 font-label-mono text-on-surface-variant">&gt; 1.0 cycles</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant transition-colors p-1" title="View Epoch Details">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors bg-error-container/10">
+<td class="p-4 font-label-mono text-on-surface-variant">2023-10-24 14:23:30</td>
+<td class="p-4 font-medium text-on-surface">SNR Drop</td>
+<td class="p-4">
+<span class="px-2.5 py-1 rounded-full bg-status-running/10 text-status-running border border-status-running/30 font-label-mono text-[11px] uppercase tracking-wide">Warning</span>
+</td>
+<td class="p-4 font-label-mono">28.4 dBHz</td>
+<td class="p-4 font-label-mono text-on-surface-variant">&lt; 30.0 dBHz</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant transition-colors p-1" title="View Epoch Details">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
+<td class="p-4 font-label-mono text-on-surface-variant">2023-10-24 15:05:00</td>
+<td class="p-4 font-medium text-on-surface">Phase Outlier</td>
+<td class="p-4">
+<span class="px-2.5 py-1 rounded-full bg-status-running/10 text-status-running border border-status-running/30 font-label-mono text-[11px] uppercase tracking-wide">Warning</span>
+</td>
+<td class="p-4 font-label-mono">0.085m</td>
+<td class="p-4 font-label-mono text-on-surface-variant">&gt; 0.05m</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant transition-colors p-1" title="View Epoch Details">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="p-4 font-label-mono text-on-surface-variant">2023-10-24 18:40:00</td>
+<td class="p-4 font-medium text-on-surface">Low Elevation</td>
+<td class="p-4">
+<span class="px-2.5 py-1 rounded-full bg-status-running/10 text-status-running border border-status-running/30 font-label-mono text-[11px] uppercase tracking-wide">Info</span>
+</td>
+<td class="p-4 font-label-mono">9.5°</td>
+<td class="p-4 font-label-mono text-on-surface-variant">&lt; 10.0°</td>
+<td class="p-4 text-right">
+<button class="text-primary hover:text-on-primary-fixed-variant transition-colors p-1" title="View Epoch Details">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-surface-variant bg-surface-container-lowest flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing 4 of 12 exceptions</span>
+<div class="flex gap-1">
+<button class="px-3 py-1 border border-outline-variant rounded bg-surface text-on-surface-variant disabled:opacity-50 font-label-mono text-[12px]" disabled="">Prev</button>
+<button class="px-3 py-1 border border-outline-variant rounded bg-surface hover:bg-surface-container text-on-surface font-label-mono text-[12px] transition-colors">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

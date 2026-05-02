@@ -39,15 +39,15 @@ export function SolveJobsPage() {
 
   const { data: sites } = useQuery({
     queryKey: ['sites', 'solve-form'],
-    queryFn: () => api.getSites(new URLSearchParams({ page: '1', page_size: '2000' })),
+    queryFn: () => api.getSites(new URLSearchParams({ page: '1', page_size: '200' })),
   });
   const { data: rinexFiles } = useQuery({
     queryKey: ['rinex-files', 'solve-form'],
-    queryFn: () => api.getRinexFiles(new URLSearchParams({ page: '1', page_size: '500', file_type: 'obs' })),
+    queryFn: () => api.getRinexFiles(new URLSearchParams({ page: '1', page_size: '200', file_type: 'obs' })),
   });
   const { data: navFiles } = useQuery({
     queryKey: ['rinex-files', 'solve-form', 'nav'],
-    queryFn: () => api.getRinexFiles(new URLSearchParams({ page: '1', page_size: '500', file_type: 'nav' })),
+    queryFn: () => api.getRinexFiles(new URLSearchParams({ page: '1', page_size: '200', file_type: 'nav' })),
   });
   const { data: jobs, isLoading: jobsLoading } = useQuery({
     queryKey: ['solve-jobs'],
@@ -242,9 +242,6 @@ export function SolveJobsPage() {
       <div className="page-hero">
         <div className="page-hero-kicker">解算任务</div>
         <h1 className="page-hero-title">先预检，再提交单点定位解算任务。</h1>
-        <p className="page-hero-copy">
-          这一页保留了现有的真实 SPP 任务、失败诊断和卫星状态展示，同时按你的设计稿强化成“任务处理中心”的观感。
-        </p>
         <div className="page-hero-meta">
           <span>{jobs?.total ?? 0} 个任务已记录</span>
           <span className="page-hero-meta-dot" />

@@ -1,3 +1,5 @@
+import httpx
+
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import DBSession
@@ -54,6 +56,16 @@ async def query_remote(payload: RinexRemoteQueryRequest, db: DBSession):
         items = await query_remote_rinex_files(db, payload)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except httpx.HTTPStatusError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"远端 RINEX 服务返回错误：HTTP {exc.response.status_code}",
+        ) from exc
+    except httpx.HTTPError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"远端 RINEX 服务暂时不可用，请检查网络后重试：{exc}",
+        ) from exc
     return ok(items)
 
 

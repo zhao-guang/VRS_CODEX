@@ -65,7 +65,7 @@ class SiteRead(ORMModel):
     monument_height: str | None
     geologic_characteristic: str | None
     bedrock_type: str | None
-    networks: list[SiteNetworkRead] = []
+    networks: list[SiteNetworkRead] = Field(default_factory=list)
     created_at: datetime
     updated_at: datetime
 
@@ -77,4 +77,11 @@ class ObservationSummary(BaseModel):
     local_file_count: int = 0
     remote_file_count: int = 0
     coverage_ratio: float = 0.0
-    gaps: list[dict] = []
+    covered_seconds: float = 0.0
+    expected_seconds: float = 0.0
+    downloaded_file_count: int = 0
+    indexed_file_count: int = 0
+    available_constellations: list[str] = Field(default_factory=list)
+    files_by_type: dict[str, int] = Field(default_factory=dict)
+    files_by_period: dict[str, int] = Field(default_factory=dict)
+    gaps: list[dict] = Field(default_factory=list)

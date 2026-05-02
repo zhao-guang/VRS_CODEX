@@ -2,11 +2,17 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.env
+.venv/
+.tmp/
+.tools/
 
 backend/data/*.db
 backend/data/rinex/
+backend/*.log
 
 frontend/node_modules/
 frontend/dist/
 
 solver/build/
+solver/build-vs/

@@ -1,7 +1,10 @@
 #include <cstdlib>
+#include <condition_variable>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 #include <string>
+#include <thread>
 
 #include <httplib.h>
 #include <nlohmann/json.hpp>

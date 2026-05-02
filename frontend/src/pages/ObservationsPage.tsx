@@ -42,7 +42,7 @@ export function ObservationsPage() {
 
   const { data: sites } = useQuery({
     queryKey: ['sites', 'observation-options'],
-    queryFn: () => api.getSites(new URLSearchParams({ page: '1', page_size: '2000' })),
+    queryFn: () => api.getSites(new URLSearchParams({ page: '1', page_size: '200' })),
   });
   const { data: localFiles, isLoading: localLoading } = useQuery({
     queryKey: ['rinex-files'],
@@ -251,9 +251,6 @@ export function ObservationsPage() {
       <div className="page-hero">
         <div className="page-hero-kicker">观测数据</div>
         <h1 className="page-hero-title">统一查询、下载与检查观测文件资产。</h1>
-        <p className="page-hero-copy">
-          页面沿用现有 GA 查询、下载和本地索引闭环，但视觉结构已经参考设计稿统一成更偏任务台的布局。
-        </p>
         <div className="page-hero-meta">
           <span>{localFiles?.total ?? 0} 个本地文件</span>
           <span className="page-hero-meta-dot" />

@@ -21,6 +21,7 @@
 - TanStack Query
 - Ant Design
 - ECharts
+- Leaflet + OpenStreetMap
 - dayjs
 
 ## 3. 当前应用结构
@@ -31,7 +32,14 @@
 
 - `AppShell`
 - 左侧导航
+- 顶部工具栏
 - 主内容区域
+
+顶部工具栏包含全局搜索、通知/帮助/设置/账户入口，以及全局显示方案图标切换：
+
+- 太阳/月亮图标：切换明亮主题与深色主题
+- 方框/布局图标：切换标准方案与玻璃方案
+- 显示偏好由 `DisplayPreferencesProvider` 提供，保存到 `localStorage`，对所有路由生效
 
 ### 3.2 当前路由
 
@@ -91,6 +99,20 @@ type PageResponse<T> = {
 6. 历史分析 `AnalyticsPage`
 7. 系统状态 `SystemPage`
 
+## 5.1 近期 UI 与交互实现更新
+
+本轮前端根据 `docs/stitch_.zip` 中 Stitch 设计稿完成以下增强：
+
+- 全页面统一采用 Stitch 方案中的字体、色彩、卡片层级和工具栏风格。
+- 页面 Hero 区域去除说明文案，只保留页面身份、主标题和关键指标。
+- 总览页移除独立显示方案控制区，显示方案改为顶部工具栏全局图标控制。
+- 站点管理页新增 OpenStreetMap 地图视图，地图点击站点图标可以打开详情。
+- 站点地图根据缩放级别进行聚合；高缩放级别只渲染当前视口内站点，降低浏览卡顿。
+- 子网和站点列表新增“详情”动作，详情以抽屉弹出，不改变当前列表上下文。
+- 站点详情抽屉拆分为“基本信息 / 子网信息 / 结算”三个页签。
+- 站点详情内集成观测数据查询、远端下载、本地文件选择、SPP 预检、SPP 提交和结果查看。
+- 解算结果可与站点元数据坐标做误差分析，展示东向、北向、高程、平面与三维误差。
+
 ## 6. 页面、功能与后台接口
 
 ### 6.1 总览页
@@ -101,11 +123,11 @@ type PageResponse<T> = {
 
 当前功能：
 
-- 展示系统是否已完成初始化
+- 展示系统是否已完成初始化；初始化未完成时显示已完成、总量、剩余和分类进度，完成后隐藏提示
 - 展示子网总数、站点总数、解算任务总数
-- 展示后台、数据库、文件存储、solver 的健康状态
-- 展示最近子网
-- 展示站点样例列表
+- 横向展示后台、数据库、文件存储、solver 的健康状态
+- 展示最近解算任务
+- 全局显示方案切换由顶部工具栏提供
 
 #### `GET /api/v1/system/health`
 
@@ -151,6 +173,12 @@ type PageResponse<T> = {
 - `latest_batch.created_at`: 批次创建时间
 - `counts.networks`: 当前本地子网总数
 - `counts.sites`: 当前本地站点总数
+- `progress.networks.completed`: 已完成初始化的子网数量
+- `progress.networks.total`: 初始化子网总量
+- `progress.networks.remaining`: 子网剩余数量
+- `progress.sites.completed`: 已完成初始化的站点数量
+- `progress.sites.total`: 初始化站点总量
+- `progress.sites.remaining`: 站点剩余数量
 
 #### `GET /api/v1/networks`
 
@@ -240,6 +268,8 @@ type PageResponse<T> = {
 
 - 子网列表
 - 按关键字搜索子网名称
+- 查看子网详情抽屉
+- 查看子网下站点列表
 - 新增子网
 - 编辑子网
 - 删除子网
@@ -262,6 +292,43 @@ type PageResponse<T> = {
 
 - 分页结构 `PageResponse<Network>`
 - 关键字段见 `6.1` 中同名接口说明
+
+#### `GET /api/v1/networks/{networkId}`
+
+用途：
+
+- 子网详情抽屉展示基础信息
+
+参数说明：
+
+- 路径参数 `networkId`: 子网 ID
+
+返回值说明：
+
+- 返回单个 `Network`
+- 字段与 `GET /api/v1/networks` 的单项结构一致
+
+#### `GET /api/v1/networks/{networkId}/sites`
+
+用途：
+
+- 子网详情抽屉展示子网站点列表
+
+参数说明：
+
+- 路径参数 `networkId`: 子网 ID
+
+返回值说明：
+
+- 返回数组 `NetworkSiteBrief[]`
+- `items[].id`: 站点 ID
+- `items[].name`: 站点名称
+- `items[].four_char_id`: 四字符码
+- `items[].domes_number`: DOMES 编号
+- `items[].site_status`: 站点状态
+- `items[].latitude`: 纬度
+- `items[].longitude`: 经度
+- `items[].ellipsoidal_height`: 大地高
 
 #### `POST /api/v1/networks`
 
@@ -331,6 +398,14 @@ type PageResponse<T> = {
 
 - 站点列表
 - 关键字搜索
+- OpenStreetMap 站点分布图
+- 地图视口裁剪与聚合显示
+- 点击地图站点图标打开站点详情
+- 站点详情抽屉
+- 详情页签：基本信息、子网信息、结算
+- 详情内远端 RINEX 查询、下载、本地文件复用
+- 详情内 SPP 预检、提交和结果查看
+- 详情内解算坐标与站点元数据坐标误差分析
 - 新增站点
 - 编辑站点
 - 删除站点
@@ -356,6 +431,21 @@ type PageResponse<T> = {
 
 - 分页结构 `PageResponse<Site>`
 - `Site` 关键字段见 `6.1`
+
+#### `GET /api/v1/sites/{siteId}`
+
+用途：
+
+- 站点详情抽屉加载当前站点完整元数据
+
+参数说明：
+
+- 路径参数 `siteId`: 站点 ID
+
+返回值说明：
+
+- 返回单个 `Site`
+- 字段与 `GET /api/v1/sites` 的单项结构一致
 
 #### `POST /api/v1/sites`
 
@@ -425,6 +515,38 @@ type PageResponse<T> = {
 
 - `deleted`: 是否删除成功
 - `id`: 被删除站点 ID
+
+#### `GET /api/v1/sites/{siteId}/observation-summary`
+
+用途：
+
+- 站点详情“结算”页签展示观测数据覆盖概览
+
+参数说明：
+
+- 路径参数 `siteId`: 站点 ID
+- `start_time`: 覆盖统计起始时间，可选
+- `end_time`: 覆盖统计结束时间，可选
+- `file_period`: 文件周期过滤，可选
+- `file_type`: 文件类型过滤，可选
+- `with_remote`: 是否同时统计远端，可选
+
+返回值说明：
+
+- `site_id`: 站点 ID
+- `start_time`: 统计起始时间
+- `end_time`: 统计结束时间
+- `local_file_count`: 本地文件数量
+- `remote_file_count`: 远端文件数量
+- `coverage_ratio`: 覆盖率，范围 `0-1`
+- `covered_seconds`: 已覆盖秒数
+- `expected_seconds`: 期望覆盖秒数
+- `downloaded_file_count`: 已下载文件数量
+- `indexed_file_count`: 已索引文件数量
+- `available_constellations`: 可用星座数组
+- `files_by_type`: 按文件类型统计
+- `files_by_period`: 按文件周期统计
+- `gaps`: 覆盖缺口数组
 
 ### 6.4 观测数据页
 
@@ -521,6 +643,10 @@ type PageResponse<T> = {
 - `fileId`: 远端文件 ID
 - `metadataErrors`: 元数据错误数组
 - `filename`: 文件名
+
+错误处理：
+
+- 后台会把远端 RINEX 服务 HTTP 错误转换为 `502`，前端直接显示可读错误原因，避免只出现 `internal server error`
 
 #### `POST /api/v1/rinex-files/download`
 
@@ -639,7 +765,7 @@ type PageResponse<T> = {
 
 - `frontend/src/pages/SolveJobsPage.tsx`
 
-当前实现范围仅覆盖 SPP。
+当前实现范围覆盖 SPP。SPP 创建能力既保留在解算任务页，也集成到站点详情“结算”页签中。
 
 #### `GET /api/v1/solve-jobs`
 
@@ -801,6 +927,17 @@ type PageResponse<T> = {
 - `nsat_used`: 使用卫星数
 - `sigma0`: 单位权中误差
 - `residual_summary_json`: 残差摘要
+
+站点详情中的误差分析：
+
+- 前端读取 SPP 结果首个有效历元。
+- 若站点元数据中存在纬度、经度和大地高，则将解算坐标与元数据坐标对比。
+- 误差指标包括：
+- `eastError`: 东向误差，米
+- `northError`: 北向误差，米
+- `heightError`: 高程误差，米
+- `horizontalError`: 平面误差，米
+- `spatialError`: 三维误差，米
 
 #### `GET /api/v1/solve-jobs/{jobId}/satellites`
 
@@ -1039,6 +1176,8 @@ type PageResponse<T> = {
 
 - `PageSection`
 - `StatusTag`
+- `SiteLeafletMap`
+- `DisplayPreferencesProvider`
 
 ## 8. 当前状态管理与数据流
 
@@ -1060,8 +1199,20 @@ type PageResponse<T> = {
 - 远端勾选结果
 - 预检结果
 - 各页面弹窗和抽屉开关
+- 当前打开的站点详情、子网详情
+- 站点详情内远端查询结果和已选下载项
+- 站点详情内 SPP 提交结果和坐标误差分析结果
 
-### 8.3 轻量筛选状态
+### 8.3 全局显示偏好
+
+当前通过 React Context 管理全局显示偏好：
+
+- `frontend/src/displayPreferences.ts` 定义上下文和类型
+- `frontend/src/DisplayPreferencesProvider.tsx` 负责读取、保存和提供状态
+- `AppShell` 根据偏好在根布局上设置 `app-theme-*` 和 `app-scheme-*` 类名
+- `styles.css` 根据根类名切换全局色彩、背景、卡片、表格、输入框和地图配色
+
+### 8.4 轻量筛选状态
 
 当前项目保留了 `frontend/src/store.ts` 中的轻量筛选状态，用于：
 
@@ -1086,9 +1237,9 @@ type PageResponse<T> = {
 
 基于当前实现，下一步建议按下面顺序扩展：
 
-1. 为子网、站点、解算任务补独立详情路由
-2. 把结果抽屉拆分为“概览 / 历元 / 卫星 / 诊断”页签
+1. 为站点地图增加后端 bbox 查询或瓦片化聚合，进一步支撑更大规模站网
+2. 把 SPP 结果抽屉拆分为“概览 / 历元 / 卫星 / 诊断 / 坐标误差”页签
 3. 在观测页增加本地文件筛选和分页参数联动
 4. 为 SPP 结果增加图表视图
 5. 在 solver 真实支持后再补 RTD / RTK 页面流
-6. 条件成熟后加入地图能力
+6. 为子网详情增加批量加入/移出站点能力

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import DBSession
 from app.api.response import ok
@@ -13,14 +13,21 @@ from app.schemas.solve_jobs import (
     SppSolveRequest,
 )
 from app.services.precheck_service import run_spp_precheck
-from app.services.solve_job_service import create_spp_job, get_job, list_jobs
+from app.services.solve_job_service import cancel_job, create_spp_job, get_job, list_jobs
 
 router = APIRouter(prefix="/solve-jobs", tags=["solve-jobs"])
 
 
 @router.get("")
-async def list_solve_jobs(db: DBSession):
-    jobs = list_jobs(db)
+async def list_solve_jobs(
+    db: DBSession,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=200),
+    status: str | None = None,
+    job_type: str | None = None,
+    site_id: int | None = None,
+):
+    result = list_jobs(db, page=page, page_size=page_size, status=status, job_type=job_type, site_id=site_id)
     items = [
         SolveJobRead.model_validate(
             {
@@ -29,9 +36,9 @@ async def list_solve_jobs(db: DBSession):
                 "summary": job.result.summary_json if job.result else None,
             }
         )
-        for job in jobs
+        for job in result["items"]
     ]
-    return ok(PaginatedItems(items=items, total=len(items), page=1, page_size=len(items) or 20))
+    return ok(PaginatedItems(items=items, total=result["total"], page=page, page_size=page_size))
 
 
 @router.post("/spp")
@@ -123,5 +130,26 @@ async def get_solve_logs(job_id: int, db: DBSession):
             "status": job.status,
             "error_message": job.error_message,
             "solver_job_id": job.solver_job_id,
+            "engine": job.result.engine if job.result else None,
+            "diagnostics": (job.result.summary_json or {}).get("attemptDiagnostics", []) if job.result else [],
         }
+    )
+
+
+@router.delete("/{job_id}")
+async def cancel_solve_job(job_id: int, db: DBSession):
+    try:
+        job = cancel_job(db, job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    if job is None:
+        raise HTTPException(status_code=404, detail="Solve job not found")
+    return ok(
+        SolveJobRead.model_validate(
+            {
+                **job.__dict__,
+                "engine": job.result.engine if job.result else None,
+                "summary": job.result.summary_json if job.result else None,
+            }
+        )
     )

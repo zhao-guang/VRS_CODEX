@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Job Results: JOB-889A-RTK - GeodesyPro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f3fd",
+                        "surface-container-high": "#e7e7f2",
+                        "secondary-fixed": "#d7e3fb",
+                        "on-secondary-fixed-variant": "#3b475b",
+                        "surface-dim": "#d9d9e4",
+                        "on-primary-fixed": "#001848",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#0c56d0",
+                        "on-background": "#191b23",
+                        "inverse-surface": "#2e3038",
+                        "outline-variant": "#c3c6d6",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#d4e0f8",
+                        "primary": "#003d9b",
+                        "solution-fix": "#52C41A",
+                        "on-primary-container": "#c4d2ff",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#7b2600",
+                        "secondary-fixed-dim": "#bbc7de",
+                        "surface-container-lowest": "#ffffff",
+                        "status-queued": "#0052CC",
+                        "status-succeeded": "#52C41A",
+                        "on-primary": "#ffffff",
+                        "surface-container-highest": "#e1e2ec",
+                        "on-tertiary-container": "#ffc6b2",
+                        "on-secondary-container": "#576377",
+                        "background": "#faf8ff",
+                        "surface-container": "#ededf8",
+                        "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                        "tertiary-container": "#a33500",
+                        "surface": "#faf8ff",
+                        "on-surface-variant": "#434654",
+                        "on-tertiary-fixed-variant": "#812800",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed": "#380d00",
+                        "solution-invalid": "#BFBFBF",
+                        "outline": "#737685",
+                        "inverse-primary": "#b2c5ff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#101c2d",
+                        "tertiary-fixed-dim": "#ffb59b",
+                        "solution-code": "#1890FF",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#0052cc",
+                        "status-running": "#FAAD14",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "secondary": "#535f73",
+                        "status-failed": "#F5222D",
+                        "tertiary-fixed": "#ffdbcf",
+                        "primary-fixed": "#dae2ff",
+                        "status-cancelled": "#8C8C8C",
+                        "solution-float": "#FF7A45",
+                        "surface-variant": "#e1e2ec",
+                        "on-surface": "#191b23"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "240px",
+                        "gutter-md": "16px",
+                        "content-padding": "24px",
+                        "card-gap": "20px",
+                        "form-item-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter", "sans-serif"],
+                        "headline-md": ["Inter", "sans-serif"],
+                        "body-sm": ["Inter", "sans-serif"],
+                        "label-mono": ["Space Grotesk", "monospace"],
+                        "headline-xl": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-base": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-base text-body-base min-h-screen flex">
+<!-- SideNavBar from JSON -->
+<nav class="fixed left-0 top-0 h-full w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col py-4 overflow-y-auto z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded-DEFAULT bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">public</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-slate-900 dark:text-slate-50 leading-none">GeodesyPro</h1>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Management Platform</span>
+</div>
+</div>
+<div class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-base text-body-base">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">lan</span>
+<span class="font-body-base text-body-base">Networks</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span class="font-body-base text-body-base">Sites</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">satellite_alt</span>
+<span class="font-body-base text-body-base">Observations</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">work_history</span>
+<span class="font-body-base text-body-base">Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-r-2 border-blue-700 dark:border-blue-400 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-base text-body-base font-medium">Results</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">dns</span>
+<span class="font-body-base text-body-base">System Status</span>
+</a>
+</div>
+<div class="mt-auto px-2 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-body-base text-body-base">Support</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-slate-200 transition-colors duration-150 ease-linear rounded-DEFAULT" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-base text-body-base">Settings</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-[240px] flex-1 min-w-0 flex flex-col bg-surface-container-low min-h-screen">
+<!-- TopNavBar from JSON -->
+<header class="fixed top-0 right-0 left-64 h-16 flex items-center justify-between px-6 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 z-40 transition-all duration-200 ease-in-out">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-DEFAULT pl-9 pr-4 py-1.5 font-body-base text-body-base focus:ring-1 focus:ring-primary focus:bg-white transition-colors outline-none" placeholder="Search resources..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-1.5 bg-primary text-on-primary font-body-base text-body-base font-medium rounded-DEFAULT hover:bg-primary-fixed-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">upload</span>
+                    Upload RINEX
+                </button>
+<div class="h-6 w-px bg-slate-200 mx-2"></div>
+<button class="text-slate-500 hover:bg-slate-50 hover:text-blue-700 p-1.5 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-slate-500 hover:bg-slate-50 hover:text-blue-700 p-1.5 rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-slate-500 hover:bg-slate-50 hover:text-blue-700 p-1.5 rounded-full transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+<img alt="User avatar" class="w-8 h-8 rounded-full ml-2 border border-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtRVLWmXa_kai8We_crTY6X6OmTX8W0BEWOqYFY5g3U64yQsq1_HZAv_Pb3tsh1ukSU4NfJ0Cyj0kNUGgxAy49knm8ldlmiJ7LeKIcPOCOTc-XK8JDZzm3n4gJFL92RPiVJYeWApcceAwkEUp2Jdf1r1kO3jdrtn3A1XYHIVueRJP11zMTJoyogzrFick_qdiuSX5PjG3hJ4FnFZ5N81NnOJJ72_xSMZh3Yvc0xEoGDvyhyfN0TT4rokL3nrkRemXvPOAAgP2E"/>
+</div>
+</header>
+<div class="flex-1 pt-16 px-content-padding pb-content-padding overflow-x-hidden flex flex-col gap-card-gap">
+<!-- Page Header -->
+<div class="flex items-end justify-between mt-6">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<span class="px-2.5 py-0.5 rounded-full bg-status-succeeded/10 border border-status-succeeded text-status-succeeded font-body-sm text-body-sm font-semibold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-status-succeeded"></span>
+                            Succeeded
+                        </span>
+<span class="px-2.5 py-0.5 rounded-DEFAULT bg-surface-container-high text-on-surface-variant font-label-mono text-label-mono">RTK</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                            Duration: 15:23
+                        </span>
+</div>
+<h2 class="font-headline-xl text-headline-xl text-on-background m-0 flex items-center gap-3">
+                        JOB-889A-RTK
+                        <span class="material-symbols-outlined text-outline-variant cursor-pointer hover:text-primary transition-colors text-[24px]">content_copy</span>
+</h2>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded-DEFAULT font-body-base text-body-base font-medium hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Export Result
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-4 gap-card-gap">
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-5 flex flex-col relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-solution-fix/5 rounded-full blur-xl"></div>
+<span class="font-body-sm text-body-sm text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Fix Rate</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-headline-xl text-on-background leading-none">100</span>
+<span class="text-on-surface-variant font-body-base text-body-base mb-1">%</span>
+</div>
+<div class="mt-4 w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-solution-fix h-full w-full rounded-full"></div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-5 flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Mean Horiz. Error</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-headline-xl text-on-background leading-none">1.2</span>
+<span class="text-on-surface-variant font-body-base text-body-base mb-1">cm</span>
+</div>
+<div class="mt-auto pt-4 flex items-center gap-2 text-status-succeeded font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+<span>0.3cm vs previous</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-5 flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Mean Vert. Error</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-headline-xl text-on-background leading-none">2.5</span>
+<span class="text-on-surface-variant font-body-base text-body-base mb-1">cm</span>
+</div>
+<div class="mt-auto pt-4 flex items-center gap-2 text-status-running font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span>0.1cm vs previous</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-container-high rounded-xl p-5 flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Satellites (Avg)</span>
+<div class="flex items-end gap-2">
+<span class="font-headline-xl text-headline-xl text-on-background leading-none">24</span>
+<span class="text-on-surface-variant font-body-base text-body-base mb-1">SVs</span>
+</div>
+<div class="mt-auto pt-4 flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex -space-x-1">
+<span class="w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center text-[8px] font-bold text-blue-800 border border-white">G</span>
+<span class="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center text-[8px] font-bold text-red-800 border border-white">R</span>
+<span class="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center text-[8px] font-bold text-green-800 border border-white">E</span>
+</div>
+<span>Constellations used</span>
+</div>
+</div>
+</div>
+<!-- Main Layout: Visualizations & Table -->
+<div class="flex flex-col xl:flex-row gap-card-gap flex-1">
+<!-- Left Column: Visualizations -->
+<div class="flex-1 flex flex-col bg-surface-container-lowest border border-surface-container-high rounded-xl overflow-hidden min-w-0">
+<!-- Tabs -->
+<div class="flex border-b border-surface-container-high px-4 pt-2 bg-surface-container-low/50">
+<button class="px-4 py-3 font-body-base text-body-base font-medium text-primary border-b-2 border-primary">
+                            Trajectory
+                        </button>
+<button class="px-4 py-3 font-body-base text-body-base font-medium text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-outline-variant">
+                            Residuals
+                        </button>
+<button class="px-4 py-3 font-body-base text-body-base font-medium text-on-surface-variant hover:text-on-surface transition-colors border-b-2 border-transparent hover:border-outline-variant">
+                            Satellite Status
+                        </button>
+</div>
+<!-- Map Panel Container -->
+<div class="flex-1 relative bg-surface-dim min-h-[400px]">
+<!-- Decorative map background to simulate MapLibre canvas -->
+<div class="absolute inset-0 bg-[#e5e3df]" style="background-image: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z\' fill=\'%23d5d3cf\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'/%3E%3C/svg%3E');">
+<!-- Simulated trajectory line -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M 20,80 Q 40,30 50,40 T 80,20" fill="none" stroke="#52C41A" stroke-width="0.8"></path>
+<circle cx="20" cy="80" fill="#1890FF" r="1.5"></circle>
+<circle cx="80" cy="20" fill="#F5222D" r="1.5"></circle>
+</svg>
+</div>
+<!-- Map Overlay Controls -->
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<div class="bg-surface-map-overlay backdrop-blur-sm rounded-DEFAULT border border-surface-container-high shadow-sm p-1 flex flex-col">
+<button class="p-1.5 text-on-surface hover:bg-surface-container-high rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</button>
+<div class="h-px bg-surface-container-high w-full my-0.5"></div>
+<button class="p-1.5 text-on-surface hover:bg-surface-container-high rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined text-[20px]">remove</span>
+</button>
+</div>
+<div class="bg-surface-map-overlay backdrop-blur-sm rounded-DEFAULT border border-surface-container-high shadow-sm p-1">
+<button class="p-1.5 text-on-surface hover:bg-surface-container-high rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+</button>
+</div>
+</div>
+<!-- Map Legend Overlay -->
+<div class="absolute bottom-4 left-4 bg-surface-map-overlay backdrop-blur-sm rounded-DEFAULT border border-surface-container-high shadow-sm p-3 font-body-sm text-body-sm">
+<h4 class="font-semibold text-on-surface mb-2">Solution Status</h4>
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-solution-fix"></div>
+<span>Fixed (100%)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-0.5 bg-solution-float"></div>
+<span>Float (0%)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Data Table Container -->
+<div class="xl:w-[480px] 2xl:w-[600px] flex flex-col bg-surface-container-lowest border border-surface-container-high rounded-xl overflow-hidden">
+<div class="px-4 py-3 border-b border-surface-container-high bg-surface-container-low/30 flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface m-0">Epoch Results</h3>
+<div class="flex gap-2">
+<button class="p-1 text-on-surface-variant hover:text-on-surface transition-colors" title="Filter">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-on-surface transition-colors" title="Download CSV">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse font-label-mono text-label-mono">
+<thead class="sticky top-0 bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm uppercase tracking-wider z-10 border-b border-surface-container-high shadow-sm">
+<tr>
+<th class="px-4 py-2 font-medium">Time (GPST)</th>
+<th class="px-4 py-2 font-medium">Status</th>
+<th class="px-4 py-2 font-medium text-right">Lat/Lon/Hgt</th>
+<th class="px-4 py-2 font-medium text-right">PDOP</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high">
+<!-- Row 1 -->
+<tr class="hover:bg-blue-50/50 transition-colors cursor-pointer group">
+<td class="px-4 py-2.5 whitespace-nowrap text-on-surface">12:00:00.0</td>
+<td class="px-4 py-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-solution-fix inline-block mr-1"></span> Fix
+                                    </td>
+<td class="px-4 py-2.5 text-right whitespace-nowrap text-on-surface-variant">
+                                        45.1234567<br/>
+                                        -93.1234567<br/>
+                                        254.123
+                                    </td>
+<td class="px-4 py-2.5 text-right text-on-surface">1.2</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-blue-50/50 transition-colors cursor-pointer">
+<td class="px-4 py-2.5 whitespace-nowrap text-on-surface">12:00:01.0</td>
+<td class="px-4 py-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-solution-fix inline-block mr-1"></span> Fix
+                                    </td>
+<td class="px-4 py-2.5 text-right whitespace-nowrap text-on-surface-variant">
+                                        45.1234568<br/>
+                                        -93.1234566<br/>
+                                        254.124
+                                    </td>
+<td class="px-4 py-2.5 text-right text-on-surface">1.2</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-blue-50/50 transition-colors cursor-pointer">
+<td class="px-4 py-2.5 whitespace-nowrap text-on-surface">12:00:02.0</td>
+<td class="px-4 py-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-solution-fix inline-block mr-1"></span> Fix
+                                    </td>
+<td class="px-4 py-2.5 text-right whitespace-nowrap text-on-surface-variant">
+                                        45.1234569<br/>
+                                        -93.1234565<br/>
+                                        254.122
+                                    </td>
+<td class="px-4 py-2.5 text-right text-on-surface">1.3</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-blue-50/50 transition-colors cursor-pointer">
+<td class="px-4 py-2.5 whitespace-nowrap text-on-surface">12:00:03.0</td>
+<td class="px-4 py-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-solution-fix inline-block mr-1"></span> Fix
+                                    </td>
+<td class="px-4 py-2.5 text-right whitespace-nowrap text-on-surface-variant">
+                                        45.1234570<br/>
+                                        -93.1234564<br/>
+                                        254.125
+                                    </td>
+<td class="px-4 py-2.5 text-right text-on-surface">1.3</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-blue-50/50 transition-colors cursor-pointer">
+<td class="px-4 py-2.5 whitespace-nowrap text-on-surface">12:00:04.0</td>
+<td class="px-4 py-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-solution-fix inline-block mr-1"></span> Fix
+                                    </td>
+<td class="px-4 py-2.5 text-right whitespace-nowrap text-on-surface-variant">
+                                        45.1234571<br/>
+                                        -93.1234563<br/>
+                                        254.124
+                                    </td>
+<td class="px-4 py-2.5 text-right text-on-surface">1.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="border-t border-surface-container-high px-4 py-2 bg-surface-container-lowest flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant">
+<span>Showing 1-5 of 55,380 epochs</span>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-surface-container-high rounded-DEFAULT transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="p-1 hover:bg-surface-container-high rounded-DEFAULT transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

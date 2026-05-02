@@ -186,7 +186,9 @@ async def query_remote_rinex_files(db: Session, request: RinexRemoteQueryRequest
     }
 
     async with httpx.AsyncClient(timeout=settings.request_timeout_seconds, follow_redirects=True) as client:
-        response = await client.get("https://data.gnss.ga.gov.au/api/v1/rinexFiles", params=params)
+        response = await client.get("https://data.gnss.ga.gov.au/api/rinexFiles", params=params)
+        if response.status_code == 404:
+            return []
         response.raise_for_status()
         payload = response.json()
 

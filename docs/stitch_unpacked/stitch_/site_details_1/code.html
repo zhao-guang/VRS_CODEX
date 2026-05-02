@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Site Details - Alice Springs (ALIC)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#bbc7de",
+                        "on-primary-container": "#c4d2ff",
+                        "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                        "primary": "#003d9b",
+                        "surface-container-highest": "#e1e2ec",
+                        "secondary": "#535f73",
+                        "surface-container-low": "#f3f3fd",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "on-secondary-fixed-variant": "#3b475b",
+                        "solution-float": "#FF7A45",
+                        "status-cancelled": "#8C8C8C",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#d4e0f8",
+                        "primary-fixed": "#dae2ff",
+                        "on-primary": "#ffffff",
+                        "tertiary": "#7b2600",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-surface": "#2e3038",
+                        "surface-container": "#ededf8",
+                        "status-running": "#FAAD14",
+                        "on-secondary-container": "#576377",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d9d9e4",
+                        "solution-fix": "#52C41A",
+                        "tertiary-container": "#a33500",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#0052cc",
+                        "on-secondary-fixed": "#101c2d",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#434654",
+                        "outline-variant": "#c3c6d6",
+                        "tertiary-fixed-dim": "#ffb59b",
+                        "on-tertiary-fixed": "#380d00",
+                        "surface-variant": "#e1e2ec",
+                        "status-failed": "#F5222D",
+                        "on-primary-fixed": "#001848",
+                        "outline": "#737685",
+                        "on-surface": "#191b23",
+                        "inverse-primary": "#b2c5ff",
+                        "tertiary-fixed": "#ffdbcf",
+                        "surface": "#faf8ff",
+                        "solution-invalid": "#BFBFBF",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e7f2",
+                        "solution-code": "#1890FF",
+                        "secondary-fixed": "#d7e3fb",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-background": "#191b23",
+                        "status-succeeded": "#52C41A",
+                        "on-tertiary-container": "#ffc6b2",
+                        "status-queued": "#0052CC",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "surface-tint": "#0c56d0",
+                        "background": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#812800"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "content-padding": "24px",
+                        "form-item-margin": "24px",
+                        "gutter-md": "16px",
+                        "card-gap": "20px",
+                        "sidebar-width": "240px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-mono": ["Space Grotesk"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-base": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-[#F4F5F7] text-on-surface font-body-base antialiased flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-4 bg-slate-50 dark:bg-slate-950 text-blue-700 dark:text-blue-400 font-sans text-sm font-medium fixed left-0 top-0 h-full w-64 border-r border-r border-slate-200 dark:border-slate-800 flat no shadows transition-all duration-150 ease-in-out z-40 flex-shrink-0">
+<div class="px-6 mb-8 mt-2">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined filled text-2xl text-blue-700 dark:text-blue-400" data-icon="satellite_alt">satellite_alt</span>
+<div>
+<div class="text-blue-700 dark:text-blue-400 font-black uppercase tracking-wider text-sm leading-tight">Geodesy Ops</div>
+<div class="text-[10px] text-slate-500 font-medium tracking-wide">Precision Network</div>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="hub">hub</span>
+<span>Networks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 border-r-2 border-blue-700 dark:border-blue-400 transition-colors" href="#">
+<span class="material-symbols-outlined filled text-[20px]" data-icon="location_on">location_on</span>
+<span>Sites</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="satellite_alt">satellite_alt</span>
+<span>Observations</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="work_history">work_history</span>
+<span>Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+<span>Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="router">router</span>
+<span>System Status</span>
+</a>
+</div>
+<div class="mt-auto px-3 space-y-1 pt-4 border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="contact_support">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="menu_book">menu_book</span>
+<span>Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-sidebar-width w-full">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center h-14 px-6 w-full sticky top-0 z-50 bg-white dark:bg-slate-900 text-blue-700 dark:text-blue-400 font-sans text-sm font-medium tracking-tight docked full-width top-0 border-b border-b border-slate-200 dark:border-slate-800 flat no shadows">
+<div class="flex items-center gap-4">
+<span class="text-lg font-bold text-slate-900 dark:text-white md:hidden">GeoPrecise GNSS</span>
+</div>
+<div class="flex-1 max-w-md mx-4 hidden md:block">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]" data-icon="search">search</span>
+<input class="w-full h-8 pl-9 pr-4 bg-slate-100 dark:bg-slate-800 border-none rounded-DEFAULT text-sm focus:ring-1 focus:ring-blue-500 outline-none text-slate-700 dark:text-slate-200 placeholder-slate-400" placeholder="Search sites, networks, jobs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded-DEFAULT text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 rounded-DEFAULT text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<button class="p-1.5 rounded-DEFAULT text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer active:opacity-80 mr-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center overflow-hidden cursor-pointer">
+<span class="font-bold text-blue-700 text-xs">AP</span>
+</div>
+</div>
+</header>
+<!-- Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto p-content-padding bg-[#F4F5F7]">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h1 class="font-headline-xl text-headline-xl text-on-surface">Alice Springs</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-mono text-label-mono border border-outline-variant">ALIC</span>
+<span class="px-2.5 py-0.5 rounded-full bg-[#F6FFED] text-status-succeeded font-body-sm text-body-sm border border-[#B7EB8F] flex items-center gap-1.5 ml-2">
+<span class="w-1.5 h-1.5 rounded-full bg-status-succeeded"></span> Active
+                        </span>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm">Northern Territory, Australia • GNSS Reference Station</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-surface-container-lowest text-on-surface font-body-sm text-body-sm rounded-DEFAULT border border-outline-variant hover:bg-surface-container transition-colors">Edit Metadata</button>
+<button class="px-4 py-2 bg-primary text-on-primary font-body-sm text-body-sm rounded-DEFAULT hover:bg-primary-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+                        Export RINEX
+                    </button>
+</div>
+</div>
+<!-- In-Page Tabs -->
+<div class="border-b border-outline-variant mb-6 flex overflow-x-auto no-scrollbar">
+<button class="px-4 py-2.5 text-primary border-b-2 border-primary font-label-mono text-label-mono whitespace-nowrap bg-surface-container-low/50">Overview</button>
+<button class="px-4 py-2.5 text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono whitespace-nowrap transition-colors">Metadata History</button>
+<button class="px-4 py-2.5 text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono whitespace-nowrap transition-colors">Observation Summary</button>
+<button class="px-4 py-2.5 text-on-surface-variant hover:text-on-surface font-label-mono text-label-mono whitespace-nowrap transition-colors">Quality Analytics</button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-card-gap mb-card-gap">
+<!-- Metadata Card (Left Col) -->
+<div class="xl:col-span-1 bg-surface-container-lowest rounded-lg border border-[#E1E4E8] p-5 flex flex-col gap-6">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="info">info</span>
+                            Site Information
+                        </h2><div class="mb-6 rounded-lg overflow-hidden border border-outline-variant/30">
+<img alt="Alice Springs GNSS Site Monument" class="w-full h-48 object-cover bg-slate-100" data-alt="A professional geodetic monument: a concrete pillar with a GNSS antenna on top, set in a semi-arid landscape under a clear sky." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnI1M9_xXWfB7U_9_6_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX_xX"/>
+<div class="p-2 bg-surface-container-low text-[11px] text-on-surface-variant italic border-t border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]" data-icon="photo_camera">photo_camera</span>
+        Primary Monument View (ALIC)
+    </div>
+</div>
+<div class="space-y-4">
+<div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1">DOMES Number</p>
+<p class="font-label-mono text-label-mono text-on-surface bg-surface-container-low px-2 py-1 rounded inline-block">50137M001</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1">Latitude</p>
+<p class="font-label-mono text-label-mono text-on-surface">-23.6701239°</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1">Longitude</p>
+<p class="font-label-mono text-label-mono text-on-surface">133.8855133°</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1">Elevation</p>
+<p class="font-label-mono text-label-mono text-on-surface">542.18m</p>
+</div>
+<div>
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1">Installation Date</p>
+<p class="font-body-sm text-body-sm text-on-surface">1994-05-12</p>
+</div>
+</div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/30">
+<h3 class="font-label-mono text-label-mono text-on-surface-variant mb-3 uppercase tracking-wider text-[11px]">Current Equipment</h3>
+<div class="bg-surface-container-low p-3 rounded border border-outline-variant/50 space-y-3">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5" data-icon="memory">memory</span>
+<div>
+<p class="font-body-sm text-body-sm font-medium text-on-surface">SEPT POLARX5</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Receiver • SN: 3012356</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5" data-icon="cell_tower">cell_tower</span>
+<div>
+<p class="font-body-sm text-body-sm font-medium text-on-surface">LEIAR25.R3 LEIT</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Antenna • SN: 725134</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Panel (Right Col, 2/3 width) -->
+<div class="xl:col-span-2 bg-surface-container-lowest rounded-lg border border-[#E1E4E8] overflow-hidden relative min-h-[400px]">
+<!-- Placeholder for MapLibre Canvas -->
+<div class="absolute inset-0 bg-slate-200">
+<img alt="Map View" class="w-full h-full object-cover opacity-60 grayscale-[20%]" data-alt="Satellite map view of Alice Springs arid landscape with a distinct blue marker indicating the GNSS site location, high contrast, technical cartography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVwDozVyGS6vdIiKfZaGVwd80-cutp6lkA_whKXJ4xHkQa1GarwZvyt07hBGJrBGEwdBgBqm16CnQlvIIHLBr6QB-mLK3CH-wYKGIcobPmy35BWT6a2rsd4tqaxPbL1T_l4Mer8acS1V7tZBb6ZApQwVYLTTpKWpfMJWlpmH3R5E619ffuUC2R6aRolaeofcdt2Ud1ssR1lncDujiYV2UfFRsbqUd8FSb8HHDFAasHtHEnpHCOpzNX_lfBs5eOa2_SMr5B5tHl"/>
+</div>
+<!-- Map Controls Overlay -->
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<button class="w-8 h-8 bg-surface-map-overlay rounded shadow-sm border border-outline-variant/50 flex items-center justify-center text-on-surface hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+</button>
+<button class="w-8 h-8 bg-surface-map-overlay rounded shadow-sm border border-outline-variant/50 flex items-center justify-center text-on-surface hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="remove">remove</span>
+</button>
+<button class="w-8 h-8 bg-surface-map-overlay rounded shadow-sm border border-outline-variant/50 flex items-center justify-center text-on-surface hover:bg-surface-container-lowest transition-colors mt-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="my_location">my_location</span>
+</button>
+</div>
+<!-- Map Info Overlay -->
+<div class="absolute bottom-4 left-4 right-4 md:right-auto bg-surface-map-overlay backdrop-blur-sm p-3 rounded border border-outline-variant/50 shadow-sm md:max-w-sm">
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-mono text-label-mono text-on-surface">ALIC Location Reference</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Located in central Australia, providing critical spatial infrastructure for the Australian tectonic plate monitoring.</p>
+</div>
+</div>
+</div>
+<!-- Two Column Layout for Data & Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-card-gap">
+<!-- Observation Summary (Heatmap) -->
+<div class="bg-surface-container-lowest rounded-lg border border-[#E1E4E8] p-5">
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="calendar_month">calendar_month</span>
+                            Observation Availability (30 Days)
+                        </h2>
+<button class="text-primary font-body-sm text-body-sm hover:underline">View All</button>
+</div>
+<!-- Faux Heatmap -->
+<div class="mt-4">
+<div class="flex items-center gap-2 mb-2 text-[10px] text-on-surface-variant font-label-mono uppercase">
+<span class="w-6"></span>
+<div class="flex-1 flex justify-between">
+<span>1</span>
+<span>5</span>
+<span>10</span>
+<span>15</span>
+<span>20</span>
+<span>25</span>
+<span>30</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] text-on-surface-variant font-label-mono">GPS</span>
+<div class="flex-1 grid grid-cols-30 gap-0.5 h-4">
+<!-- Generating 30 solid blocks -->
+<div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div>
+<div class="bg-status-running rounded-sm opacity-80" title="Partial Data"></div><div class="bg-status-failed rounded-sm opacity-70" title="Missing Data"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] text-on-surface-variant font-label-mono">GLO</span>
+<div class="flex-1 grid grid-cols-30 gap-0.5 h-4">
+<div class="bg-status-succeeded rounded-sm opacity-80"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-70"></div>
+<div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div>
+<div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-75"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div>
+<div class="bg-status-running rounded-sm opacity-60"></div><div class="bg-surface-dim rounded-sm opacity-50"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div>
+<div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-70"></div>
+<div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div><div class="bg-status-succeeded rounded-sm opacity-85"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-80"></div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-6 text-[10px] text-on-surface-variant font-label-mono">GAL</span>
+<div class="flex-1 grid grid-cols-30 gap-0.5 h-4">
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div>
+<div class="bg-status-succeeded rounded-sm opacity-80"></div><div class="bg-status-failed rounded-sm opacity-80"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-90"></div>
+<div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-95"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div><div class="bg-status-succeeded rounded-sm opacity-100"></div>
+</div>
+</div>
+</div>
+<div class="flex justify-end items-center gap-4 mt-4 pt-4 border-t border-outline-variant/30 text-[11px] text-on-surface-variant font-body-sm">
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-status-succeeded"></span> &gt; 95%</div>
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-status-running"></span> 50-95%</div>
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-status-failed"></span> &lt; 50%</div>
+<div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm border border-outline-variant"></span> No Data</div>
+</div>
+</div>
+</div>
+<!-- Quality Analytics (Charts) -->
+<div class="bg-surface-container-lowest rounded-lg border border-[#E1E4E8] p-5">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="monitoring">monitoring</span>
+                        Quality Analytics
+                    </h2>
+<div class="space-y-6">
+<!-- Faux Line Chart -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<p class="text-on-surface-variant font-body-sm text-body-sm">Daily Availability (%)</p>
+<p class="font-label-mono text-label-mono text-status-succeeded">Avg 98.4%</p>
+</div>
+<div class="h-20 w-full relative border-b border-l border-outline-variant/50">
+<!-- SVG representation of a line chart -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M0,20 L10,25 L20,15 L30,22 L40,10 L50,8 L60,80 L70,30 L80,15 L90,20 L100,10" fill="none" stroke="#003d9b" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+<path d="M0,20 L10,25 L20,15 L30,22 L40,10 L50,8 L60,80 L70,30 L80,15 L90,20 L100,10 L100,100 L0,100 Z" fill="rgba(0, 61, 155, 0.1)" stroke="none"></path>
+</svg>
+</div>
+</div>
+<!-- Faux Bar Chart -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<p class="text-on-surface-variant font-body-sm text-body-sm">Fix Rate (Daily)</p>
+<p class="font-label-mono text-label-mono text-on-surface">Avg 92.1%</p>
+</div>
+<div class="h-20 w-full relative border-b border-l border-outline-variant/50 flex items-end justify-between px-1 pb-px">
+<!-- Generated Bars -->
+<div class="w-[3%] bg-solution-fix h-[90%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[92%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[88%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[95%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[91%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[93%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[89%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[94%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[92%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[90%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[85%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[88%] rounded-t-sm"></div>
+<div class="w-[3%] bg-status-running h-[60%] rounded-t-sm"></div>
+<div class="w-[3%] bg-status-failed h-[30%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[80%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[88%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[92%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[95%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[93%] rounded-t-sm"></div>
+<div class="w-[3%] bg-solution-fix h-[91%] rounded-t-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="h-8"></div> <!-- Bottom padding -->
+</main>
+</div>
+</body></html>

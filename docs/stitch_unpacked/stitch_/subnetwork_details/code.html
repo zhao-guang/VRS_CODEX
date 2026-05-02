@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subnetwork Detail - Precision Geodesy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#0040a2",
+                        "surface-tint": "#0c56d0",
+                        "on-primary-fixed": "#001848",
+                        "status-succeeded": "#52C41A",
+                        "on-tertiary": "#ffffff",
+                        "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                        "surface-variant": "#e1e2ec",
+                        "solution-invalid": "#BFBFBF",
+                        "on-secondary": "#ffffff",
+                        "solution-code": "#1890FF",
+                        "on-surface": "#191b23",
+                        "primary-fixed": "#dae2ff",
+                        "secondary": "#535f73",
+                        "surface-container": "#ededf8",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3fd",
+                        "primary-container": "#0052cc",
+                        "on-tertiary-container": "#ffc6b2",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d7e3fb",
+                        "inverse-on-surface": "#f0f0fb",
+                        "tertiary-fixed": "#ffdbcf",
+                        "status-queued": "#0052CC",
+                        "solution-float": "#FF7A45",
+                        "on-secondary-fixed-variant": "#3b475b",
+                        "inverse-surface": "#2e3038",
+                        "on-primary-container": "#c4d2ff",
+                        "tertiary": "#7b2600",
+                        "primary": "#003d9b",
+                        "surface-container-high": "#e7e7f2",
+                        "status-running": "#FAAD14",
+                        "secondary-container": "#d4e0f8",
+                        "solution-fix": "#52C41A",
+                        "on-tertiary-fixed-variant": "#812800",
+                        "on-error-container": "#93000a",
+                        "surface": "#faf8ff",
+                        "on-surface-variant": "#434654",
+                        "outline-variant": "#c3c6d6",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#576377",
+                        "tertiary-container": "#a33500",
+                        "on-background": "#191b23",
+                        "surface-container-highest": "#e1e2ec",
+                        "surface-dim": "#d9d9e4",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b2c5ff",
+                        "background": "#faf8ff",
+                        "tertiary-fixed-dim": "#ffb59b",
+                        "surface-container-lowest": "#ffffff",
+                        "status-cancelled": "#8C8C8C",
+                        "outline": "#737685",
+                        "on-secondary-fixed": "#101c2d",
+                        "status-failed": "#F5222D",
+                        "secondary-fixed-dim": "#bbc7de",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-fixed": "#380d00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "form-item-margin": "24px",
+                        "sidebar-width": "240px",
+                        "gutter-md": "16px",
+                        "card-gap": "20px",
+                        "content-padding": "24px"
+                    },
+                    "fontFamily": {
+                        "label-mono": ["Space Grotesk"],
+                        "headline-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-base": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+<!-- TopNavBar (Mobile Only) -->
+<header class="flex justify-between items-center h-14 px-6 w-full sticky top-0 bg-white border-b border-surface-variant z-40 md:hidden block">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">GeoSystem GNSS</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors">settings</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-colors">help</span>
+</div>
+</header>
+<!-- SideNavBar (Web Only) -->
+<nav class="hidden md:flex flex-col h-screen w-sidebar-width border-r border-surface-variant fixed left-0 top-0 z-50 bg-surface-container-lowest">
+<div class="p-6 border-b border-surface-variant">
+<h1 class="font-headline-md text-headline-md text-primary uppercase tracking-wider mb-1">Precision Geodesy</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">V2.4.0-Stable</p>
+</div>
+<div class="flex-1 overflow-y-auto py-4">
+<ul class="space-y-1 px-3 font-label-mono text-label-mono">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span>Overview</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-primary bg-primary-fixed-dim/20 border-r-2 border-primary font-bold transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">hub</span>
+<span>Networks</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span>Sites</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">satellite_alt</span>
+<span>Observations</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">work_history</span>
+<span>Jobs</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span>Analysis</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">dns</span>
+<span>System Status</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="p-4 border-t border-surface-variant mt-auto">
+<ul class="space-y-1 font-label-mono text-label-mono">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span>
+<span>Support</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span>Documentation</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-sidebar-width p-content-padding w-full max-w-[1600px] mx-auto flex flex-col gap-card-gap">
+<!-- Header & Actions -->
+<header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<h2 class="font-headline-xl text-headline-xl text-on-background">CORS-Global-01</h2>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-mono text-label-mono bg-status-succeeded/10 text-status-succeeded border border-status-succeeded/20">
+<span class="w-1.5 h-1.5 rounded-full bg-status-succeeded mr-1.5"></span>
+                        Active
+                    </span>
+</div>
+<p class="font-body-base text-body-base text-on-surface-variant">Created: 2023-10-15 • Primary Global Reference Network</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="inline-flex items-center justify-center h-10 px-4 rounded font-label-mono text-label-mono border border-outline-variant text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined mr-2 text-[18px]">edit</span>
+                    Edit Network Details
+                </button>
+<button class="inline-flex items-center justify-center h-10 px-4 rounded font-label-mono text-label-mono bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined mr-2 text-[18px]">add</span>
+                    Add Sites to Network
+                </button>
+</div>
+</header>
+<!-- Stats Row (Bento Style) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-card-gap">
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-5 flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Total Sites</span>
+<span class="material-symbols-outlined text-outline">location_on</span>
+</div>
+<div class="flex items-end gap-2 mt-auto">
+<span class="font-headline-xl text-headline-xl text-on-surface">142</span>
+<span class="font-body-sm text-body-sm text-status-succeeded mb-1 flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +3 this week
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-5 flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Active Jobs</span>
+<span class="material-symbols-outlined text-status-running">work_history</span>
+</div>
+<div class="flex items-end gap-2 mt-auto">
+<span class="font-headline-xl text-headline-xl text-on-surface">8</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-1">processing</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-5 flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Data Health Score</span>
+<span class="material-symbols-outlined text-status-succeeded">health_and_safety</span>
+</div>
+<div class="flex items-end gap-2 mt-auto">
+<span class="font-headline-xl text-headline-xl text-status-succeeded">99.8%</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mb-1">Epochs valid</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-surface-variant rounded-xl p-5 flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Last Sync Time</span>
+<span class="material-symbols-outlined text-outline">sync</span>
+</div>
+<div class="flex items-end gap-2 mt-auto">
+<span class="font-headline-md text-headline-md text-on-surface">14 mins ago</span>
+</div>
+</div>
+</div>
+<!-- Main Layout: Map & Table -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-card-gap min-h-[600px]">
+<!-- Map Panel -->
+<div class="lg:col-span-1 bg-surface-container-lowest border border-surface-variant rounded-xl flex flex-col overflow-hidden relative">
+<div class="p-4 border-b border-surface-variant bg-surface-container-lowest/80 backdrop-blur z-10 absolute top-0 left-0 right-0">
+<h3 class="font-headline-md text-headline-md text-on-surface">Spatial Distribution</h3>
+</div>
+<div class="flex-1 w-full h-full min-h-[400px] relative bg-surface-container">
+<img alt="Satellite map view" class="w-full h-full object-cover opacity-80" data-alt="high contrast satellite map view focused on a global projection showing scattered data points with faint glowing lines connecting them" data-location="Global" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0uP4GrLJLxKF6d_aICISLWYVFsSarz_s5XLLMPtBfVo6jPEnx5Ln3sH433tbkcaDPJs3xVgqANRUqe_2qut5soSbeNkyZJiPKHhAS7QCAH3vFLgIuDQtrA4hWkyGgeSZ_0Oi88whxXodTjLy35pxVaqNkW9OGnD84N_4JzVOdnsYlAaUZP3fY1zG6N8YSBK7fS3nTTPPtgqrhcReQKxmFo5rjICt41wsAxO_o7bAXhfNN-2BxZxDx-vKIs8jLEJL7i5mAZht_"/>
+<!-- Map Overlays -->
+<div class="absolute bottom-4 left-4 bg-surface-map-overlay p-2 rounded border border-surface-variant shadow-sm backdrop-blur">
+<div class="flex items-center gap-2 font-label-mono text-label-mono text-on-surface-variant">
+<div class="w-3 h-3 rounded-full bg-status-succeeded"></div><span>Online (138)</span>
+</div>
+<div class="flex items-center gap-2 mt-1 font-label-mono text-label-mono text-on-surface-variant">
+<div class="w-3 h-3 rounded-full bg-status-failed"></div><span>Offline (4)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Table -->
+<div class="lg:col-span-2 bg-surface-container-lowest border border-surface-variant rounded-xl flex flex-col overflow-hidden">
+<div class="p-4 border-b border-surface-variant flex justify-between items-center bg-surface-container-lowest">
+<h3 class="font-headline-md text-headline-md text-on-surface">Network Sites</h3>
+<div class="flex items-center gap-2">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="h-8 pl-9 pr-3 rounded border border-outline-variant bg-surface-container-low text-body-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none w-48" placeholder="Filter sites..." type="text"/>
+</div>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low font-label-mono text-label-mono text-on-surface-variant sticky top-0 z-10 border-b border-surface-variant">
+<tr>
+<th class="py-3 px-4 font-medium w-10">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</th>
+<th class="py-3 px-4 font-medium">Site ID</th>
+<th class="py-3 px-4 font-medium">Location</th>
+<th class="py-3 px-4 font-medium">Status</th>
+<th class="py-3 px-4 font-medium">Fix Rate (24h)</th>
+<th class="py-3 px-4 font-medium">Last Observation</th>
+<th class="py-3 px-4 font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm text-on-surface divide-y divide-surface-variant">
+<tr class="hover:bg-primary-fixed-dim/10 transition-colors group cursor-pointer">
+<td class="py-3 px-4">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="py-3 px-4 font-label-mono text-primary font-medium">ALIC</td>
+<td class="py-3 px-4">Alice Springs, AUS</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-mono text-[11px] bg-status-succeeded/10 text-status-succeeded border border-status-succeeded/20">Online</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[60px]">
+<div class="bg-solution-fix h-1.5 rounded-full" style="width: 99%"></div>
+</div>
+<span class="text-on-surface-variant">99.9%</span>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">2 mins ago</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-primary-fixed-dim/10 transition-colors group cursor-pointer">
+<td class="py-3 px-4">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="py-3 px-4 font-label-mono text-primary font-medium">BAHR</td>
+<td class="py-3 px-4">Bahrain, BHR</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-mono text-[11px] bg-status-succeeded/10 text-status-succeeded border border-status-succeeded/20">Online</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[60px]">
+<div class="bg-solution-fix h-1.5 rounded-full" style="width: 98%"></div>
+</div>
+<span class="text-on-surface-variant">98.5%</span>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">5 mins ago</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="bg-error-container/20 hover:bg-error-container/40 transition-colors group cursor-pointer">
+<td class="py-3 px-4">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="py-3 px-4 font-label-mono text-primary font-medium">CHUR</td>
+<td class="py-3 px-4">Churchill, CAN</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-mono text-[11px] bg-status-failed/10 text-status-failed border border-status-failed/20">Offline</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[60px]">
+<div class="bg-solution-invalid h-1.5 rounded-full" style="width: 15%"></div>
+</div>
+<span class="text-status-failed">15.2%</span>
+</div>
+</td>
+<td class="py-3 px-4 text-status-failed font-medium">12 hrs ago</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-primary-fixed-dim/10 transition-colors group cursor-pointer">
+<td class="py-3 px-4">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="py-3 px-4 font-label-mono text-primary font-medium">DAV1</td>
+<td class="py-3 px-4">Davis Base, ATA</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-mono text-[11px] bg-status-running/10 text-status-running border border-status-running/20">Syncing</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[60px]">
+<div class="bg-solution-float h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+<span class="text-on-surface-variant">85.0%</span>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">1 min ago</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-primary-fixed-dim/10 transition-colors group cursor-pointer">
+<td class="py-3 px-4">
+<input class="rounded border-outline-variant text-primary focus:ring-primary h-4 w-4" type="checkbox"/>
+</td>
+<td class="py-3 px-4 font-label-mono text-primary font-medium">GUAM</td>
+<td class="py-3 px-4">Guam, GUM</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full font-label-mono text-[11px] bg-status-succeeded/10 text-status-succeeded border border-status-succeeded/20">Online</span>
+</td>
+<td class="py-3 px-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-variant rounded-full h-1.5 max-w-[60px]">
+<div class="bg-solution-fix h-1.5 rounded-full" style="width: 97%"></div>
+</div>
+<span class="text-on-surface-variant">97.8%</span>
+</div>
+</td>
+<td class="py-3 px-4 text-on-surface-variant">3 mins ago</td>
+<td class="py-3 px-4 text-right">
+<button class="text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity hover:text-primary">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-3 border-t border-surface-variant bg-surface-container-lowest flex justify-between items-center font-body-sm text-body-sm text-on-surface-variant">
+<span>Showing 1 to 5 of 142 sites</span>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded hover:bg-surface-container disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-7 h-7 rounded bg-primary text-on-primary flex items-center justify-center font-medium">1</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center">2</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container flex items-center justify-center">3</button>
+<span class="px-1">...</span>
+<button class="p-1 rounded hover:bg-surface-container">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

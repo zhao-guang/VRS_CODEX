@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subnetwork Management - GNSS Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "status-failed": "#F5222D",
+                        "surface-variant": "#e1e2ec",
+                        "status-succeeded": "#52C41A",
+                        "secondary-fixed": "#d7e3fb",
+                        "solution-fix": "#52C41A",
+                        "solution-float": "#FF7A45",
+                        "surface-container-low": "#f3f3fd",
+                        "tertiary-fixed": "#ffdbcf",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#3b475b",
+                        "primary-fixed-dim": "#b2c5ff",
+                        "outline": "#737685",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d4e0f8",
+                        "on-secondary-container": "#576377",
+                        "primary": "#003d9b",
+                        "surface-container-high": "#e7e7f2",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191b23",
+                        "primary-fixed": "#dae2ff",
+                        "on-tertiary-container": "#ffc6b2",
+                        "tertiary": "#7b2600",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb59b",
+                        "error": "#ba1a1a",
+                        "background": "#faf8ff",
+                        "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                        "on-tertiary-fixed": "#380d00",
+                        "outline-variant": "#c3c6d6",
+                        "on-primary-fixed-variant": "#0040a2",
+                        "on-primary-fixed": "#001848",
+                        "surface-container-highest": "#e1e2ec",
+                        "secondary-fixed-dim": "#bbc7de",
+                        "surface": "#faf8ff",
+                        "surface-bright": "#faf8ff",
+                        "secondary": "#535f73",
+                        "solution-invalid": "#BFBFBF",
+                        "status-queued": "#0052CC",
+                        "inverse-primary": "#b2c5ff",
+                        "on-tertiary-fixed-variant": "#812800",
+                        "on-background": "#191b23",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#101c2d",
+                        "solution-code": "#1890FF",
+                        "on-primary-container": "#c4d2ff",
+                        "inverse-on-surface": "#f0f0fb",
+                        "primary-container": "#0052cc",
+                        "surface-dim": "#d9d9e4",
+                        "status-running": "#FAAD14",
+                        "inverse-surface": "#2e3038",
+                        "surface-tint": "#0c56d0",
+                        "on-surface-variant": "#434654",
+                        "on-secondary": "#ffffff",
+                        "status-cancelled": "#8C8C8C",
+                        "tertiary-container": "#a33500",
+                        "on-error": "#ffffff",
+                        "surface-container": "#ededf8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sidebar-width": "240px",
+                        "content-padding": "24px",
+                        "gutter-md": "16px",
+                        "form-item-margin": "24px",
+                        "card-gap": "20px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-mono": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-base": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "label-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background flex h-screen overflow-hidden font-body-base text-body-base">
+<!-- SideNavBar -->
+<nav class="bg-slate-50 dark:bg-slate-950 h-screen w-64 fixed left-0 top-0 flex flex-col border-r border-slate-200 dark:border-slate-800 z-50">
+<div class="px-6 py-6 border-b border-slate-200 dark:border-slate-800">
+<h1 class="text-xl font-black text-slate-900 dark:text-white font-headline-md text-headline-md">GNSS Platform</h1>
+<p class="text-slate-500 font-body-sm text-body-sm mt-1">V2.4.0-Stable</p>
+</div>
+<div class="flex flex-col h-full py-4 space-y-1 flex-1 overflow-y-auto px-3">
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-r-4 border-blue-700 font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">lan</span>
+<span>Network Management</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span>Site Management</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">database</span>
+<span>Observations</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+<span>Processing Jobs</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span>Result Analysis</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20" href="#">
+<span class="material-symbols-outlined text-[20px]">monitor_heart</span>
+<span>System Status</span>
+</a>
+</div>
+<div class="border-t border-slate-200 dark:border-slate-800 p-4 space-y-1">
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span>Documentation</span>
+</a>
+<a class="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 hover:text-blue-600 dark:hover:text-blue-300 transition-all font-['Inter'] text-[13px] font-medium" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span>
+<span>Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar -->
+<header class="bg-white dark:bg-slate-900 h-16 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 w-full sticky top-0 z-40">
+<div class="flex items-center space-x-4 flex-1">
+<span class="text-lg font-bold text-blue-700 dark:text-blue-400 tracking-tighter">GNSS Control Center</span>
+</div>
+<div class="flex items-center space-x-2">
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors rounded-full cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors rounded-full cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors rounded-full cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 ml-2 overflow-hidden border border-slate-300">
+<img alt="Professional Analyst Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWiN_cXSp7YbSs6S2woG14AoBMMfhOIwFbWT8ODyposAeV8ZhAPbCjf18yLP9hv5dKOaSZ77VUs0oGLcmPK_IxZ4PcIDTyWj0b4BeUxQHxKJzyazL6J4MFy7WlgE9c26O_CZUN3JEhw_s6iiSvpjJqe6BQ_J5W8LoGNU682N5F8hg_VAxOxi2nATH733xQZZdkn48dahDnjNW11DULhYcCE5ghOA6q5ikPstWYvrzKASZuolWcc5wZnqsG22Bwnb2PHgbQrgRW"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-y-auto bg-surface p-content-padding space-y-6">
+<!-- Header & Actions -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Subnetwork Management</h2>
+<p class="font-body-base text-body-base text-on-surface-variant mt-1">Monitor and configure regional and global GNSS processing groups.</p>
+</div>
+<button class="inline-flex items-center justify-center space-x-2 bg-primary-container text-on-primary hover:bg-primary-container/90 transition-colors px-4 py-2 rounded-lg font-body-base text-body-base font-medium shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Create Subnetwork</span>
+</button>
+</div>
+<!-- Toolbar -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between">
+<div class="relative w-full sm:max-w-md">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary-container focus:border-primary-container font-body-base text-body-base bg-surface-container-low text-on-surface placeholder-on-surface-variant/70" placeholder="Search subnetworks, nodes, or regions..." type="text"/>
+</div>
+<div class="flex items-center space-x-3 w-full sm:w-auto">
+<select class="border border-outline-variant rounded-lg px-3 py-2 bg-surface-container-low font-body-base text-body-base text-on-surface focus:ring-2 focus:ring-primary-container">
+<option>All Statuses</option>
+<option>Online</option>
+<option>Warning</option>
+<option>Offline</option>
+</select>
+<button class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-card-gap">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="p-5 border-b border-surface-variant flex justify-between items-start">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="h-2.5 w-2.5 rounded-full bg-status-succeeded"></span>
+<h3 class="font-headline-md text-headline-md text-on-surface">CORS-Global-01</h3>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant">ID: SUB-GLB-992</span>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="p-5 flex-1 space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">hub</span> Nodes</span>
+<span class="font-label-mono text-label-mono font-bold text-on-surface">128 Active</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">memory</span> Active Jobs</span>
+<span class="font-label-mono text-label-mono text-on-surface">42</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">sync</span> Last Sync</span>
+<span class="font-label-mono text-label-mono text-on-surface">2 mins ago</span>
+</div>
+</div>
+<div class="px-5 py-3 bg-surface-container-low rounded-b-xl border-t border-surface-variant flex justify-end space-x-3">
+<button class="text-primary hover:text-primary-container font-body-sm text-body-sm font-medium transition-colors">View Details</button>
+<button class="text-primary hover:text-primary-container font-body-sm text-body-sm font-medium transition-colors">Manage Nodes</button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow flex flex-col">
+<div class="p-5 border-b border-surface-variant flex justify-between items-start">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="h-2.5 w-2.5 rounded-full bg-status-running"></span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Regional-Asia-South</h3>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant">ID: SUB-ASN-401</span>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="p-5 flex-1 space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">hub</span> Nodes</span>
+<span class="font-label-mono text-label-mono font-bold text-on-surface">42 Active <span class="text-status-running ml-1">(3 Warn)</span></span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">memory</span> Active Jobs</span>
+<span class="font-label-mono text-label-mono text-on-surface">15</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">sync</span> Last Sync</span>
+<span class="font-label-mono text-label-mono text-on-surface">15 mins ago</span>
+</div>
+</div>
+<div class="px-5 py-3 bg-surface-container-low rounded-b-xl border-t border-surface-variant flex justify-end space-x-3">
+<button class="text-primary hover:text-primary-container font-body-sm text-body-sm font-medium transition-colors">View Details</button>
+<button class="text-primary hover:text-primary-container font-body-sm text-body-sm font-medium transition-colors">Manage Nodes</button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl border border-status-failed/30 shadow-sm hover:shadow-md transition-shadow flex flex-col relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-status-failed/10 rounded-bl-full flex items-start justify-end p-2 pointer-events-none">
+<span class="material-symbols-outlined text-status-failed text-[20px]">warning</span>
+</div>
+<div class="p-5 border-b border-surface-variant flex justify-between items-start">
+<div class="pr-8">
+<div class="flex items-center space-x-2 mb-1">
+<span class="h-2.5 w-2.5 rounded-full bg-status-failed"></span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Euro-Core-Net</h3>
+</div>
+<span class="font-label-mono text-label-mono text-on-surface-variant">ID: SUB-EUR-011</span>
+</div>
+<button class="text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="p-5 flex-1 space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">hub</span> Nodes</span>
+<span class="font-label-mono text-label-mono font-bold text-status-failed">0 Active (24 Down)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">memory</span> Active Jobs</span>
+<span class="font-label-mono text-label-mono text-on-surface">0</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-base text-body-base text-on-surface-variant flex items-center"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">sync</span> Last Sync</span>
+<span class="font-label-mono text-label-mono text-status-failed">3 hrs ago</span>
+</div>
+</div>
+<div class="px-5 py-3 bg-error-container/20 rounded-b-xl border-t border-error-container flex justify-end space-x-3">
+<button class="text-error hover:text-on-error-container font-body-sm text-body-sm font-medium transition-colors">Troubleshoot</button>
+<button class="text-primary hover:text-primary-container font-body-sm text-body-sm font-medium transition-colors">View Details</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

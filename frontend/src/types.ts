@@ -26,6 +26,18 @@ export type SystemStatus = {
     networks: number;
     sites: number;
   };
+  progress?: {
+    networks: {
+      completed: number;
+      total: number;
+      remaining: number;
+    };
+    sites: {
+      completed: number;
+      total: number;
+      remaining: number;
+    };
+  };
 };
 
 export type HealthStatus = {
@@ -45,6 +57,16 @@ export type Network = {
   site_count: number;
   created_at: string;
   updated_at: string;
+};
+
+export type NetworkSiteBrief = {
+  id: number;
+  name: string | null;
+  four_char_id: string | null;
+  domes_number: string | null;
+  site_status: string | null;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type SiteNetwork = {

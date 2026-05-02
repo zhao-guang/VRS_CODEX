@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Observation Data Management - GeoPrecision</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=Space+Grotesk:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#c3c6d6",
+                      "on-tertiary-fixed": "#380d00",
+                      "on-background": "#191b23",
+                      "tertiary-fixed-dim": "#ffb59b",
+                      "primary": "#003d9b",
+                      "outline": "#737685",
+                      "error": "#ba1a1a",
+                      "secondary-fixed-dim": "#bbc7de",
+                      "tertiary": "#7b2600",
+                      "secondary-fixed": "#d7e3fb",
+                      "error-container": "#ffdad6",
+                      "surface-map-overlay": "rgba(255, 255, 255, 0.9)",
+                      "surface-tint": "#0c56d0",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#101c2d",
+                      "solution-float": "#FF7A45",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#d9d9e4",
+                      "secondary-container": "#d4e0f8",
+                      "tertiary-container": "#a33500",
+                      "surface-variant": "#e1e2ec",
+                      "surface-container-low": "#f3f3fd",
+                      "status-succeeded": "#52C41A",
+                      "primary-fixed": "#dae2ff",
+                      "surface-bright": "#faf8ff",
+                      "status-queued": "#0052CC",
+                      "on-surface": "#191b23",
+                      "on-surface-variant": "#434654",
+                      "surface-container-high": "#e7e7f2",
+                      "solution-code": "#1890FF",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#b2c5ff",
+                      "secondary": "#535f73",
+                      "on-error-container": "#93000a",
+                      "status-failed": "#F5222D",
+                      "on-primary-fixed": "#001848",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#3b475b",
+                      "surface-container": "#ededf8",
+                      "solution-fix": "#52C41A",
+                      "inverse-surface": "#2e3038",
+                      "inverse-on-surface": "#f0f0fb",
+                      "tertiary-fixed": "#ffdbcf",
+                      "surface": "#faf8ff",
+                      "solution-invalid": "#BFBFBF",
+                      "background": "#faf8ff",
+                      "on-tertiary-container": "#ffc6b2",
+                      "on-error": "#ffffff",
+                      "on-primary-container": "#c4d2ff",
+                      "on-primary-fixed-variant": "#0040a2",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "on-secondary-container": "#576377",
+                      "primary-container": "#0052cc",
+                      "status-cancelled": "#8C8C8C",
+                      "surface-container-highest": "#e1e2ec",
+                      "status-running": "#FAAD14",
+                      "on-tertiary-fixed-variant": "#812800"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter-md": "16px",
+                      "content-padding": "24px",
+                      "card-gap": "20px",
+                      "sidebar-width": "240px",
+                      "form-item-margin": "24px"
+              },
+              "fontFamily": {
+                      "headline-xl": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-base": [
+                              "Inter"
+                      ],
+                      "label-mono": [
+                              "Space Grotesk"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-xl": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-base": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="bg-slate-50 dark:bg-slate-900 text-blue-700 dark:text-blue-500 font-inter text-sm font-medium w-64 h-full border-r border-r border-slate-200 dark:border-slate-800 flex flex-col fixed left-0 top-0 h-screen z-40">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">satellite_alt</span>
+</div>
+<h1 class="text-xl font-bold text-slate-900 dark:text-white">GeoPrecision</h1>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Management Suite</p>
+</div>
+<div class="flex-1 py-4 overflow-y-auto">
+<ul class="space-y-1 px-3">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                        Overview
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">hub</span>
+                        Networks
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">location_on</span>
+                        Sites
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-r-4 border-blue-700 font-semibold active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">satellite_alt</span>
+                        Observations
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">settings_backup_restore</span>
+                        Processing Jobs
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                        Analysis Tools
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">lan</span>
+                        System Status
+                    </a>
+</li>
+</ul>
+</div>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+                        Support
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+                        Settings
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md text-blue-700 dark:text-blue-500 font-inter text-sm w-full h-16 border-b border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between px-6 sticky top-0 z-30 ml-64 transition-all duration-200" style="width: calc(100% - 256px);">
+<div class="flex items-center gap-4 flex-1">
+<span class="text-lg font-black tracking-tight text-blue-700 dark:text-blue-500">GNSS Processor</span>
+<div class="relative w-64 max-w-md hidden md:block ml-4">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-full pl-10 pr-4 py-1.5 text-sm focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-slate-900 transition-all text-on-surface" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-content-padding" style="width: calc(100% - 256px);">
+<div class="flex justify-between items-end mb-card-gap">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">Observation Data Management</h2>
+<p class="font-body-base text-body-base text-on-surface-variant">Query, monitor, and manage raw RINEX observation files across all networks.</p>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded hover:bg-primary-container hover:text-on-primary-container transition-colors flex items-center gap-2 font-medium">
+<span class="material-symbols-outlined">add</span>
+                Manual Upload
+            </button>
+</div>
+<!-- Query Form Panel -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 mb-card-gap shadow-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">filter_alt</span>
+                Query Parameters
+            </h3>
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Site Selection -->
+<div class="flex flex-col">
+<label class="font-body-sm text-body-sm text-on-surface-variant font-medium mb-1">Site / Network</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 appearance-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface font-body-base">
+<option>All Networks</option>
+<option>CORS Network A</option>
+<option>Global IGS Sites</option>
+<option>Local RTK Base Stations</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">arrow_drop_down</span>
+</div>
+</div>
+<!-- Time Range -->
+<div class="flex flex-col">
+<label class="font-body-sm text-body-sm text-on-surface-variant font-medium mb-1">Time Range (GPS)</label>
+<div class="relative">
+<input class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary text-on-surface font-body-base" type="date"/>
+</div>
+</div>
+<!-- File Cycle -->
+<div class="flex flex-col">
+<label class="font-body-sm text-body-sm text-on-surface-variant font-medium mb-1">File Cycle</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 appearance-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface font-body-base">
+<option>Daily (24h)</option>
+<option>Hourly (1h)</option>
+<option>High-Rate (15m)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">arrow_drop_down</span>
+</div>
+</div>
+<!-- File Type -->
+<div class="flex flex-col">
+<label class="font-body-sm text-body-sm text-on-surface-variant font-medium mb-1">File Type</label>
+<div class="relative">
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-3 py-2 appearance-none focus:ring-2 focus:ring-primary focus:border-primary text-on-surface font-body-base">
+<option>Any Format</option>
+<option>RINEX 3.x</option>
+<option>RINEX 2.x</option>
+<option>Hatanaka Compressed (.crx)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">arrow_drop_down</span>
+</div>
+</div>
+<div class="col-span-full flex justify-end gap-3 mt-2">
+<button class="px-4 py-2 border border-outline-variant text-on-surface rounded hover:bg-surface-variant transition-colors font-medium" type="button">Clear</button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded hover:bg-primary-container hover:text-on-primary-container transition-colors font-medium flex items-center gap-2" type="button">
+<span class="material-symbols-outlined">search</span>
+                        Execute Query
+                    </button>
+</div>
+</form>
+</div>
+<!-- Data Table Container -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col h-[600px]">
+<!-- Table Header Toolbar -->
+<div class="p-4 border-b border-outline-variant bg-surface-container-low flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="font-headline-md text-headline-md text-on-surface">Results</span>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded-full text-xs font-medium">1,204 files</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-variant rounded transition-colors" title="Refresh">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:bg-surface-variant rounded transition-colors" title="Export CSV">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<!-- Table Scroll Area -->
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse">
+<thead class="sticky top-0 bg-surface-container-low z-10 shadow-sm">
+<tr>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+</th>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant">Status</th>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant">File Name</th>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant">Site ID</th>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant">Start Time (GPST)</th>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant">Size</th>
+<th class="px-4 py-3 font-body-sm text-body-sm font-semibold text-on-surface-variant border-b border-outline-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-base text-body-base text-on-surface">
+<!-- Row 1 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="px-4 py-3"><input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#f6ffed] border border-[#b7eb8f] text-[#389e0d] text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]">hard_drive</span>
+                                    Local
+                                </span>
+</td>
+<td class="px-4 py-3 font-label-mono text-label-mono text-solution-code">ALGO00CAN_R_20232840000_01D_30S_MO.crx</td>
+<td class="px-4 py-3 font-medium">ALGO</td>
+<td class="px-4 py-3 text-on-surface-variant">2023-10-11 00:00:00</td>
+<td class="px-4 py-3 text-on-surface-variant">2.4 MB</td>
+<td class="px-4 py-3 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary p-1"><span class="material-symbols-outlined text-sm">download</span></button>
+<button class="text-on-surface-variant hover:text-primary p-1"><span class="material-symbols-outlined text-sm">autorenew</span></button>
+<button class="text-on-surface-variant hover:text-error p-1"><span class="material-symbols-outlined text-sm">delete</span></button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="px-4 py-3"><input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#e6f7ff] border border-[#91d5ff] text-[#096dd9] text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]">cloud</span>
+                                    Remote
+                                </span>
+</td>
+<td class="px-4 py-3 font-label-mono text-label-mono text-solution-code">AMC200USA_R_20232840000_01D_30S_MO.crx</td>
+<td class="px-4 py-3 font-medium">AMC2</td>
+<td class="px-4 py-3 text-on-surface-variant">2023-10-11 00:00:00</td>
+<td class="px-4 py-3 text-on-surface-variant">2.1 MB</td>
+<td class="px-4 py-3 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary p-1" title="Fetch"><span class="material-symbols-outlined text-sm">cloud_download</span></button>
+<button class="text-on-surface-variant hover:text-primary p-1 opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-sm">autorenew</span></button>
+<button class="text-on-surface-variant hover:text-error p-1 opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-sm">delete</span></button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="px-4 py-3"><input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#fffbe6] border border-[#ffe58f] text-[#d48806] text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]">sync</span>
+                                    Indexing
+                                </span>
+</td>
+<td class="px-4 py-3 font-label-mono text-label-mono text-solution-code">BAHR00BHR_R_20232840000_01D_30S_MO.crx</td>
+<td class="px-4 py-3 font-medium">BAHR</td>
+<td class="px-4 py-3 text-on-surface-variant">2023-10-11 00:00:00</td>
+<td class="px-4 py-3 text-on-surface-variant">1.9 MB</td>
+<td class="px-4 py-3 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary p-1 opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-sm">download</span></button>
+<button class="text-on-surface-variant hover:text-primary p-1 opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-sm">autorenew</span></button>
+<button class="text-on-surface-variant hover:text-error p-1 opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-sm">delete</span></button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors group">
+<td class="px-4 py-3"><input class="rounded border-outline-variant text-primary focus:ring-primary" type="checkbox"/></td>
+<td class="px-4 py-3">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-[#f6ffed] border border-[#b7eb8f] text-[#389e0d] text-xs font-medium">
+<span class="material-symbols-outlined text-[14px]">hard_drive</span>
+                                    Local
+                                </span>
+</td>
+<td class="px-4 py-3 font-label-mono text-label-mono text-solution-code">BOGT00COL_R_20232840000_01D_30S_MO.crx</td>
+<td class="px-4 py-3 font-medium">BOGT</td>
+<td class="px-4 py-3 text-on-surface-variant">2023-10-11 00:00:00</td>
+<td class="px-4 py-3 text-on-surface-variant">2.8 MB</td>
+<td class="px-4 py-3 text-right opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-on-surface-variant hover:text-primary p-1"><span class="material-symbols-outlined text-sm">download</span></button>
+<button class="text-on-surface-variant hover:text-primary p-1"><span class="material-symbols-outlined text-sm">autorenew</span></button>
+<button class="text-on-surface-variant hover:text-error p-1"><span class="material-symbols-outlined text-sm">delete</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="p-3 border-t border-outline-variant bg-surface-container-low flex justify-between items-center text-sm text-on-surface-variant">
+<div>Showing 1 to 50 of 1,204 entries</div>
+<div class="flex gap-1">
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface-variant disabled:opacity-50">Previous</button>
+<button class="px-3 py-1 border border-primary bg-primary-fixed text-on-primary-fixed rounded font-medium">1</button>
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface-variant">2</button>
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface-variant">3</button>
+<span class="px-2 py-1">...</span>
+<button class="px-3 py-1 border border-outline-variant rounded hover:bg-surface-variant">Next</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
