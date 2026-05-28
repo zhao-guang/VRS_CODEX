@@ -23,8 +23,11 @@ FetchContent_MakeAvailable(cpp_httplib)
 FetchContent_MakeAvailable(nlohmann_json)
 
 add_executable(gnss_solver_service
+  src/coordinates.cpp
   src/main.cpp
+  src/rinex_reader.cpp
   src/spp_solver.cpp
+  src/time_system.cpp
 )
 
 target_link_libraries(gnss_solver_service PRIVATE httplib::httplib nlohmann_json::nlohmann_json)
